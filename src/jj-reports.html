@@ -1,0 +1,583 @@
+ <link rel="import" href="../bower_components/polymer/polymer.html">
+ <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+ <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+ <link rel="import" href="../bower_components/paper-item/paper-item.html">
+ <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+ 
+ <link rel="import" href="../bower_components/iron-icons/social-icons.html">
+ <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+ 
+ <link rel="import" href="../bower_components/ vaadin-grid/all-imports.html">
+ <link rel="import" href="../bower_components/mp-calendar/mp-calendar.html">
+
+
+ <link rel="import" href="jj-warning.html">
+ <link rel="import" href="jj-web.html">
+ 
+ <dom-module id="jj-reports">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+        position: relative;		
+        padding-top: 50px;
+        background-color: #f0f5f0;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: -webkit-box;
+          display: -moz-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          @apply(--layout-vertical);
+
+        }
+
+      :host([signed-in]) {
+        opacity: 0;
+        @apply(--layout-vertical);
+
+        
+      }
+     .container {
+        @apply --layout-horizontal;
+     }
+     .sideLeft {
+        width: 50px;
+        @apply --layout-verticals;
+        height: 100vh;
+        background-color: #ffffff;
+     }
+     .resultDo {        
+        width: 100%;
+        height: 500px;
+        background-color: #ffffff;
+
+        
+     }
+     .tableList {
+        @apply --layout-verticals;
+        padding: 0 10px;
+      
+     }
+     paper-icon-button {
+        color: indigo;
+        z-index: 1;
+        --paper-icon-button-ink-color: red;
+     }
+     paper-icon-button:focus {
+        border-bottom: solid 2px indigo;
+     }
+     paper-button.indigo {
+        background-color: indigo;
+        color:white;
+        height: 20px;
+     }
+     
+     a {
+        text-decoration: none;
+     }
+     .details {
+        display: flex;
+        font-size: 20px;
+     }
+     vaadin-grid{
+         height: 100%;
+         font-size: 14px;
+     }
+     vaadin-grid:hover {
+        cursor: pointer;
+     }
+     paper-dialog {
+        padding: 0 10px;
+     }
+     img {
+        position: absolute;
+        right: 10%;        
+     }
+     google-map {
+           position:absolute;
+           height: 110vh;
+           width: 100%; 
+           z-index: 1;
+     } 
+
+    </style>
+    REPORTS
+    <jj-warning id="warning" ltext="{{ltext}}"></jj-warning>
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+        
+    <div class="container">
+      <div class="sideLeft">
+       <paper-icon-button id="back" alt="Back To the Future" icon="icons:arrow-back" on-tap="backToMain"></paper-icon-button><br/>
+       <paper-icon-button id="list" alt="alist" icon="communication:business" on-tap="reportSelected"></paper-icon-button><br/>
+       <paper-icon-button id="chart" alt="alist" icon="editor:multiline-chart" on-tap="reportSelected1"></paper-icon-button><br/> 
+      <paper-icon-button id="chart1" alt="alist" icon="maps:person-pin-circle" on-tap="reportSelected3"></paper-icon-button><br/>
+      <!--  <paper-icon-button id="pie" alt="alist" icon="editor:pie-chart" on-tap="reportSelected2"></paper-icon-button><br/>-->
+       <paper-icon-button id="monet" alt="alist" icon="editor:monetization-on" on-tap="reportSelected2"></paper-icon-button><br/>
+
+      </div>
+      <div class="resultDo">
+    		<iron-pages role="main" selected="{{reportPage}}" attr-for-selected="name" fallback-selection="list">
+             
+            <!-- Here Show Customer Visits list with sorted 
+            *    last visited at first order
+            *
+            *************************************-->
+            <div class="tableList" name="list">
+
+             <vaadin-grid aria-label="Companies" items="[[customers]]" multi-sort>
+
+               <vaadin-grid-column>
+
+                 <template class="header">
+                   <vaadin-grid-filter path="name"> </vaadin-grid-filter>
+                   <vaadin-grid-sorter path="name">[[ltext.EnterCompany]]</vaadin-grid-sorter>
+                 </template>
+
+                <template><a href="/reports?key=[[item.key]]@[[keyOrg]]&id=[[calculateURI(item.name)]]&lat=[[item.lat]]&lng=[[item.lng]]">[[item.name]]</a></template>
+               </vaadin-grid-column>
+
+               <vaadin-grid-column>
+                 <template class="header">
+                   <vaadin-grid-filter path="lastMeeting"> </vaadin-grid-filter>
+                   <vaadin-grid-sorter path="lastMeeting" direction="desc">[[ltext.LastVisit]]</vaadin-grid-sorter>
+                 </template>
+                 <template>[[calculateDate(item.lastMeeting,"true")]]</template>
+               </vaadin-grid-column>
+             </vaadin-grid>
+            </div>
+              
+            <!-- Here Show buble chart for staff  performance 
+            *
+            *
+            *************************************-->
+            <div class="tableList" name="bubChart">
+              <paper-item>
+                 <div>
+                 <paper-button on-tap="openDatePicker0" raised=5 class="indigo">[[ltext.Start]]</paper-button>
+                 <span>&nbsp;[[calculateDate(startDate, "false")]]</span>
+                 </div>
+                 <div>
+                 <paper-button on-tap="openDatePicker1" raised=5 class="indigo">[[ltext.End]]</paper-button> 
+                 <span>&nbsp;[[calculateDate(endDate, "false")]]</span>
+                 </div>      
+              </paper-item>
+              <paper-dialog
+                 id="datePicker">
+                 <mp-calendar
+                    day-labels='["Mo","Tu","We","Th","Fr","Sa","Su"]'
+                    disable-prev-days
+                    show-days-in-month=42
+                    first-day-of-week="1"
+                    disabled-weeks="[5]"
+                    chosen="{{chosenDate}}"
+                    on-chosen-changed="_chosenChanged"
+                 ></mp-calendar>
+              </paper-dialog>
+              <div id="chart_div" style="width: 900px; height: 500px;"></div>
+
+            </div>
+              
+            <div class="tableList" name="detail">  
+             <a href="/web" > 
+              <span style="color:darkblue; font-size: 24px;">[[selectedCompany]]</span></a> 
+
+              <vaadin-grid on-active-item-changed="_onActiveItemChanged" id="grid" aria-label="Details Opened Items Example" items="[[meetings]]" size="200">
+
+               <template class="row-details">
+                 <div class="details">
+                   <p>Notes: [[item.notes]]</p>
+                 </div>
+               </template>
+
+                <vaadin-grid-column>
+                  <template class="header">
+                    
+                    <vaadin-grid-sorter path="name">[[ltext.EnterPersonName]]</vaadin-grid-sorter>
+                  </template>
+                 <template>[[item.name]]</template>
+                </vaadin-grid-column>
+
+                <template is="dom-if" if="{{!smallScreen}}">            
+                <vaadin-grid-column>
+                  <template class="header">
+                    <vaadin-grid-sorter path="notesCustomer" >[[ltext.Notes]]</vaadin-grid-sorter>
+                  </template>
+                  <template>[[item.notesCustomer]]</template>
+                </vaadin-grid-column>
+                </template>
+
+                <vaadin-grid-column>
+                  <template class="header">
+                   <vaadin-grid-sorter path="notes" direction="asc">[[ltext.MeetingDate]]</vaadin-grid-sorter>
+                  </template>
+                  <template>[[calculateDate(item.end,"true")]]</template>
+                </vaadin-grid-column> 
+              </vaadin-grid>
+                <paper-dialog  id="dialog">
+                  <div style="font-size: 28px;color:navy">[[ltext.Details]]</div><hr/>
+                  <div>[[tempt.name]]-[[calculateTypeOfMeeting(tempt.type)]]</div>
+                  <div><b>Note:</b> [[tempt.notesCustomer]][[tempt.notes]]</div>
+
+                  <div><b>Email:</b> [[tempt.meetMail]]</div>
+
+                  <div><b>[[ltext.End]]:</b> [[calculateDate(tempt.start, "true")]] </div><hr />
+                  <div>[[tempt.staffName]]</div>
+                  <template is="dom-if" if="{{shouldShowPrivateNote(tempt.orgKey)}}">
+                  <div>**[[tempt.notesPrivate]]</div></template>
+                 </paper-dialog>
+              </div>  
+       
+              <!--**********************************************************************
+              * Here people list who belong to Organisation, delete if necessar
+              *
+              ************************************************************************-->    
+
+              <div name="staffonmap">
+    <google-map 
+         id="map"
+		       map="{{map}}"
+									latitude="[[lat]]" 
+									longitude="[[lng]]" 
+									api-key="[[apiKey]]"
+									additional-map-options='{"gestureHandling" : "greedy"}'
+         zoom=18
+         > 
+           		<template id="companyMarkers" is="dom-repeat" items="{{orgusers}}" delay=300>
+
+                 <google-map-marker 
+                         click-events
+                         map="{{map}}"
+                         id="companyMarkers"
+                         latitude="[[item.lat]]" 
+                         longitude="[[item.lng]]"
+                         animation="DROP"
+                         
+                         icon='[[calculateIcon(item)]]'> 
+                          <paper-item>
+                             <img src$="[[item.photo]]" style="width: 50px; height: 50px;border-radius: 30px;">&nbsp;
+                             <paper-item-body two-line>
+                              <div>[[item.name]]</div>
+                              <div secondary>[[calculateDate(item.lastseen, 'true')]]
+                                <br/>([[ltext.LastVisit]])<br/>
+                                 <template is="dom-if" if="[[item.phone]]"> 
+                                   <a href="tel:+[[item.phone]]"><paper-icon-button id="call" icon="communication:call" alt="[[ltext.Call]]"></paper-icon-button></a>
+                                 </template>
+                                 <template is="dom-if" if="[[item.phone]]"> 
+                                    <a href="https://api.whatsapp.com/send?phone=+[[item.phone]]" target="_blank"><paper-icon-button id="whatsapp" src$="[[importPath]]../images/whatsapp-48.png" alt="[[ltext.Call]]"></paper-icon-button></a>
+                                 </template>
+                                 <template is="dom-if" if="[[item.email]]"> 
+                                    <a href="mailto:[[item.email]]"><paper-icon-button id="email" icon="communication:email" alt="[[ltext.Call]]"></paper-icon-button></a>
+                                 </template>
+                                 <a href="https://www.google.com/maps?saddr=[[lat]],[[lng]]&daddr=[[item.lat]],[[item.lng]]" target="_blank"> <paper-icon-button icon="maps:directions"></paper-icon-button></a>
+                
+                              </div>
+                             </paper-item-body>
+                          
+                          </paper-item>           
+                 </google-map-marker>
+                 
+            </template>             
+				</google-map> 
+              </div>
+              
+              
+             <!--**********************************************************************
+              * Here UnderConstruction 
+              *
+              ************************************************************************-->                
+             <div name="underconst">
+                 <img src="[[importPath]]../images/undercons.gif">
+              <span>We plan to charge 1$/user per month after one year. </span>
+             </div>
+              
+      </iron-pages>
+      </div>
+    </div>
+    
+
+
+</template> 
+  <script>
+    class JjReports extends Polymer.Element { 
+      static get is() { return 'jj-reports';}
+      static get properties() { return { 
+         customers:{
+            type:Array,
+            value() {return [];}
+         },
+         meetings:{
+            type:Array,
+            value() {return [];} 
+           
+         },
+         lat:{
+            type:Number,
+            notify:true
+         },
+         lng:{
+            type:Number,
+            notify:true
+         },
+         startDate:{
+            type:Date,
+            value() {return new Date();}
+         },
+         endDate:{
+            type:Date,
+            value() {return new Date();}
+         }
+      }}
+      static get observers() {
+        return ['checkSubroute(subroute.*)']
+       }
+     
+      ready(){
+         super.ready();
+         this.bounds = new google.maps.LatLngBounds();
+
+      }
+
+      checkHasRightToDelete(uid){
+        if (this.signedin) return this.user.uid ===uid;
+      }
+
+      _onActiveItemChanged(e) {
+          this.set('tempt', e.detail.value);
+          e.detail.value ? this.$.dialog.open():this.$.dialog.close();
+      }
+     
+      checkSubroute(s){
+           if (!s.base.__queryParams.id) { 
+              this.set('reportPage', "list");
+           } else { 
+              
+                var id = decodeURI(s.base.__queryParams.id);
+                this.extraFilter=s.base.__queryParams.ef||false;
+                var key= s.base.__queryParams.key;
+                let keyOrg = key.split('@')[1];
+                this.set('lat', s.base.__queryParams.lat);
+                this.set('lng', s.base.__queryParams.lng);
+                this.selectedCompany = id;
+                this.set('reportPage', "detail");
+                var refMeet = firebase.database().ref('meetings/'+ keyOrg ).orderByChild('filter') .equalTo(key);
+                refMeet.once('value', snap=>{
+                 if (snap.exists()) {
+                    let arr = Object.values(snap.val())
+                    if (this.extraFilter) { 
+                       arr= arr.filter(r => r.sendMail || r.sendMail===undefined );
+                    }
+                    this.set('meetings', arr )
+                 } else {
+                    this.set('meetings',[]);
+                  
+                 }
+                })
+          }
+     }
+     backToMain(){
+       this.set('route.path', 'web');
+     }
+     reportSelected(r) {
+         this.set('reportPage', "list");
+     }
+     reportSelected1(r) {
+         this.set('reportPage', "bubChart");
+     }
+     reportSelected2(r){
+         this.set('reportPage', "underconst");
+     }
+     deleteUnnecessaryUser(u){
+         var i = u.model.item;
+         var sure = this.areYouSure();
+         if (sure) {
+             // in order to delete user's own organisation memeber for EVER !
+             var updates = {};
+             updates['users/' + this.user.uid + '/waitList/' + i.connectKey] = null;
+             updates['users/' + i.uid + '/orgList/' + i.key ] = null;   
+             updates['orgusers/' + i.key +  '/' + i.uid ] = null;   
+             firebase.database().ref().update(updates); 
+         }
+     }
+     
+     reportSelected3(r){
+         this.set('reportPage', "staffonmap");
+         firebase.database().ref('orgusers/' + this.keyOrg).once('value', snap=>{
+           this.set('orgusers', Object.values(snap.val()));
+           snap.forEach(u=>{
+             snap.ref.child(u.val().uid).child('getPos').set(true);
+           })
+         })
+         
+     }
+     
+     calculateDate(d,rv) {
+         return rv==="true"? this.getLocalDate(new Date(d)): (this.getLocalDate(new Date(d))).split(' ')[0];
+     }
+     getLocalDate(date){
+        var options = {
+            weekday: "short",
+            year: "numeric",
+            month: "2-digit",
+            day: "numeric",
+            hour:"numeric",
+            minute:"2-digit"
+            };
+        return date.toLocaleDateString(navigator.language, options);
+     }
+     calculateTypeOfMeeting(type){
+          return type==="face" ? this.ltext.MeetFace : this.ltext.MeetCall;
+     }
+     shouldShowPrivateNote(n){
+          return n===this.keyOrg
+     }
+     areYouSure() {
+						   return window.confirm(this.ltext.AreYouSure);
+					}
+     // In order to test any emails I keep it here. 
+     validateEmail(email) {
+       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+       return re.test(email);
+     }
+     calculateURI(u) {
+        return encodeURIComponent(u);
+     }
+     openDatePicker0(x) {
+        this.wDate ="start";
+        this.$.datePicker.open();
+     }
+     openDatePicker1(x) {
+        this.wDate ="end";
+        this.$.datePicker.open();
+     }
+     _chosenChanged(y) {
+        this.$.datePicker.close();
+        let x = y.detail.value;
+        if (this.wDate==="start"){ this.startDate= x; }
+        if (this.wDate==="end"){ this.endDate= x; }
+     
+        let s = (new Date(this.startDate)).getTime();
+        let e = (new Date(this.endDate)).getTime()+(1000*60*60*24);
+        let orgusers=[this.ltext.AppointmentDate];
+        firebase.database().ref('orgusers/'+ this.keyOrg).once('value', snapshot=>{
+         
+             snapshot.forEach(u=>{
+                if (u.val().authorize) orgusers.push(u.val().name);
+             })
+         
+        var mtxArr=[orgusers];
+        let start =s;
+        //Loop from start date till the end date (In order to creat a matrix array)two dimentional array
+        for (;s < e;) {
+           let arr= orgusers.map(f=> {return 0})
+           arr[0] = (this.calculateDate(s,true).split(' ')[0]).slice(0,-5);
+ 
+           mtxArr.push(arr);
+           s+= (1000*60*60*24); //Adding one day     
+        }
+        let inx = 0;
+        let gde =""
+        let de =""
+        let arr2 =[];
+        var day ="";    
+        firebase.database().ref('meetings/'+this.keyOrg).orderByChild('start').startAt(start).endAt(e)
+        .once('value', snap=>{
+           if (snap.exists()) {    
+              snap.forEach((m)=>{
+               de = (this.calculateDate((m.val().end),"true").split(' ')[0]).slice(0,-5);
+               arr2.push([de, m.val().staffName])
+   
+              })
+            var inxUser =0;
+            for (var i=0; i<arr2.length; i++){
+               // 02,01 gibi bir tarih formati
+               day = arr2[i][0];      
+               inxUser = orgusers.indexOf(arr2[i][1]);
+
+               for (var j= 0; j< mtxArr.length-1; j++) {
+                  if (mtxArr[j][0]===day) {
+                      mtxArr[j][inxUser]+= 1;
+                  }
+               }
+            } 
+         
+
+            this._initiliazeChar(mtxArr);
+           } 
+        });
+      })
+     }
+     
+    _initiliazeChar(mtxArr) {
+           google.charts.load('current', {'packages':['corechart']});
+           google.charts.setOnLoadCallback(()=>{
+             // Some raw data (not necessarily accurate)
+              var data = google.visualization.arrayToDataTable(mtxArr);
+              var options = {
+                title : 'Personal daily meeting trafic',
+                vAxis: {title: 'Meeteings'},
+                hAxis: {title: 'Days'},
+                seriesType: 'bars',
+                series: {5: {type: 'line'}}
+              };
+              let el = this.shadowRoot.querySelector('#chart_div');  
+              var chart = new google.visualization.ComboChart(el);
+              chart.draw(data, options);
+             })                                          
+     }
+     calculateIcon(item){
+            
+        if(item) {
+             //Get only first name of company to publish 
+             var m = item.name ? item.name:"No Name";
+             var i = "#800d0d"
+             if (item.lastseen && (new Date()).getTime()-item.lastseen < (1000*60) ) i= "#0d800d" ; 
+             var n = m.length <12 ? m: m.substring(0, 12);       
+             var x = document.createElement("CANVAS")
+             var ctx = x.getContext("2d");
+             var w = ctx.measureText(n).width + 10;
+             if (item.lat && item.lng) {
+                this.bounds.extend({lat:item.lat, lng:item.lng});
+                this.map.fitBounds(this.bounds);              
+             }
+
+         
+             x.width= w
+             x.height=25;
+     
+             ctx.fillStyle = i;
+             ctx.fillRect(0, 0, w, 15)
+
+             var gr = ctx.createLinearGradient(0, 0, w, 0);
+             gr.addColorStop("0", "white");
+
+             // Fill with gradient
+             ctx.fillStyle = gr;
+
+
+             ctx.fillText(n, 5, 10);
+
+             ctx.beginPath(); 
+             ctx.lineWidth = "1";
+             ctx.strokeStyle = i ;
+             ctx.moveTo(w/2-5, 15);
+             ctx.lineTo(w/2, 25);
+             ctx.lineTo(w/2+6, 15);
+             ctx.stroke(); // Draw it
+             ctx.fillStyle = i;
+             ctx.fill()
+         return ctx.canvas.toDataURL();
+        }      
+     }
+     
+    };
+    customElements.define(JjReports.is, JjReports);
+  </script>
+
+ </dom-module> 

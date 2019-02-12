@@ -1,0 +1,541 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box-light.html">
+
+
+<link rel="import" href="./shared-styles.html">
+<link rel="import" href="./jj-warning.html">
+
+<dom-module id="jj-signup">
+  <template>
+    <style include="iron-flex iron-flex-alignment shared-style">
+      :host {
+        position: absolute;
+        top: 60px;
+        height: 1054px;
+        width: 100%;
+
+        background-color: #f0f5f0;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: -webkit-box;
+          display: -moz-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          @apply(--layout-vertical);
+       
+        }
+					.warn{
+          padding: 5px;
+          margin: 15px 10px;
+          border: 1px solid rgb(63,81,181);
+          border-radius: 25px;
+          color: #4d5c94;
+          background-color: aliceblue;
+          width: 92%;
+          text-align: center;
+					}
+
+     .container {
+						    position: absolute;
+						    top:20px;
+						    margin: auto;
+						    width: 100%;
+						    @apply(--layout-vertical);
+						    @apply(--layout-center-justified);
+						 
+					}
+     
+					iron-icon {
+						    width: 40px;
+						    height: 30px;
+						    position: fixed;
+          top: 5px;
+					}
+
+     .green {
+         color:green;         
+     }
+    .cont {
+      position: absolute;
+      top:70px;;
+      width: 100%;
+      @apply --layout-vertical;
+      @apply --layout-center-justified;
+    }
+     paper-card {
+      width: 90%;
+      margin: 5px 10px;
+      padding: 0 20px 60px;
+         
+     }
+
+     paper-button.indigo {
+       position: absolute;
+       right: 10px;
+       background-color: var(--paper-indigo-500);
+       color: white;
+       height: 20px;
+     }
+
+     vaadin-combo-box-light {
+       width: 90%;
+     }
+     paper-radio-group > * {
+        font-size: 14px;
+     }
+     paper-item {
+       padding: 0 0;
+       font-size: 16px;
+     }
+     
+    </style>
+
+       <app-location route="{{route}}"></app-location>
+       
+       <jj-warning id="warning" ltext="{{ltext}}"></jj-warning>
+
+							<template is="dom-if" if="[[!signedin]]"> 
+            <div class="container layout vertical center-justified">
+              <div class="warn">{{ltext.SignUpOrSignIn}}</div>
+            </div>
+				   </template>  
+				   
+       <template is="dom-if" if="[[signedin]]" class="layout horizontal center-justified"> 
+            <paper-item>
+             <paper-icon-button id="back" alt="Back To the Future" icon="icons:arrow-back" on-tap="backToMain"></paper-icon-button>
+           <paper-radio-group selected="{{selectedItm}}">
+                  <paper-radio-button name="select">[[ltext.SelectAnOrganisation]]</paper-radio-button>
+                  <paper-radio-button name="create">[[ltext.CreateAnOrganisation]]</paper-radio-button>      
+           </paper-radio-group>
+           </paper-item>
+
+
+    <iron-pages role="main" selected="{{selectedItm}}" attr-for-selected="name" fallback-selection="create">
+       
+      <paper-card name = "create" elevation="4" > 
+             <paper-input label="[[ltext.OrganisationName]]*" autocapitalize=words type="text" requires value="{{organisationName}}"></paper-input>
+             <paper-input label="[[ltext.Password]]*" value="{{op1}}" type="password" no-label-float></paper-input>     
+             <paper-input label="[[ltext.Password]] ([[ltext.Again]])*" value="{{op2}}" type="password" error-message="{{ltext.NotMatched}}" auto-validate pattern ="[[op1]]" no-label-float></paper-input>      
+             <paper-button  raised class="indigo" on-tap="_saveOrganisation" >[[ltext.Send]]</paper-button>   
+      </paper-card>
+      
+      <paper-card name="select" elevation="4" >
+            <paper-radio-group selected="{{selectedOrg}}" on-selected-changed='selectedOrgChanged'>
+            <template is="dom-repeat" items="{{orgList}}"> 
+               <paper-radio-button name="[[item.key]]" disabled="[[!item.authorize]]">[[item.name]]</paper-radio-button><template is="dom-if" if="[[!item.authorize]]"><span style="color:#8b8787">([[ltext.WaitConfirm]])</span></template> <br/>
+            </template>
+            </paper-radio-group>
+           <br/><br/> <hr>
+           <span>[[ltext.Or]], [[ltext.RequestJoin]]</span>
+          
+            <vaadin-combo-box-light 
+                label="[[ltext.EnterCompany]]"
+                items="{{organisationList}}" 
+                item-label-path="organisationName"      
+                selected-item="{{selectedItem}}"
+                value="{{company.name}}"
+                style="width: 90%;">
+               <paper-input autocapitalize=words type="text" label="[[ltext.EnterCompany]]" class="input" on-value-changed="_valueChanged" on-focused-changed="focusedChanged">
+                 <iron-icon icon="icons:search" slot="prefix" ></iron-icon>
+                 <iron-icon icon="clear" slot="suffix"  class="clear-button"></iron-icon>
+               </paper-input>
+           </vaadin-combo-box-light>
+           <paper-button  raised class="indigo" on-tap="_sendJoinRequest" >[[ltext.JoinRequest]]</paper-button>
+           
+           <br/><br/>
+           <span>[[ltext.WaitsYourConfirm]]</span>
+           <hr>
+           <template is="dom-repeat" items="{{waitList}}" filter="_filterWaitList"> 
+             <paper-item class="layout horizontal center start-justified" >
+                <paper-avatar class="large" label="[[item.userName]]" src="[[item.photo]]" two-chars style="margin-right: 10px;" ></paper-avatar>
+                <div><span class="flex">[[item.orgName]]</span><paper-button  class="indigo" on-tap="_confirmUser">[[ltext.Ok]]</paper-button><br/><span> [[item.userName]]</span>
+
+                <paper-button class="indigo" on-tap="_deleteUserRequest">[[ltext.Delete]]</paper-button>
+
+                </div>
+              </paper-item>
+           </template>   
+           <br/><br/>
+           <hr />
+           <paper-input label="[[ltext.PrimaryEmail]]" value="{{orguser.email}}" on-change='primaryEmailChanged'></paper-input>
+           <paper-input label="[[ltext.YourMobile]]" value="{{orguser.phone}}"  on-change='primaryPhoneChanged'><iron-icon icon="icons:add" slot="prefix"></iron-icon>
+           </paper-input>
+           <div style="color: darkviolet; font-size: 22px;">[[organisation]]</div>
+           <paper-button raised class="indigo" on-tap="_orgMembers">[[ltext.Members]]</paper-button><hr/> 
+           <br/><br/>
+           <div>
+           <template is="dom-repeat" items="[[calculateAsArrayObject(orgusers)]]">
+             
+            <paper-item> 
+               <paper-avatar class="large" label="[[item.name]]" src="[[item.photo]]" two-chars style="margin-right: 10px;" ></paper-avatar>
+               <paper-item-body two-line> 
+                <div> <span class="flex"> [[item.name]] </span>
+                <template is="dom-if" if="[[orguser.admin]]">
+                   <paper-button raised class="indigo" on-tap="deleteUnnecessaryUser">[[ltext.Delete]]</paper-button>
+                </template>
+                </div>
+                <div secondary>
+                 [[item.email]]
+                </div>
+              </paper-item-body>
+             </paper-item>
+           </template>
+           </div>
+       </paper-card>
+
+      </iron-pages>
+      
+      
+      
+       </template>
+       
+       <div class="cont"> 
+           <div id="firebaseui-container"></div> 
+       </div>
+  </template>
+ 
+  <script>
+    class JjSignup extends Polymer.Element { 
+        static get is() { return 'jj-signup';}
+        static get properties() { return { 
+    
+								user:{
+										type:Object,
+									 notify:true
+								},
+        udata:{
+          type:Object,
+          notify:true
+        },
+         
+        active:{
+          type:Boolean,
+          valu:true
+        },
+        organisation:{
+          type:String,
+          notify:true,
+          value() {return localStorage.getItem('orgName');}
+        },
+        selectedItm:{
+          type:String,
+          value:"select"
+        },
+        selectedOrg:{
+          type:String,
+          computed:'getPreSelectedOrg(keyOrg)'
+        },
+        keyOrg:{
+          type:"String",
+          notify:true,
+          value() {return localStorage.getItem('keyOrg');}
+        }
+
+        }}
+         
+      static get observers() { return ['checkUserSignedin(signedin, deviceready, cordova)',
+                                       'checkOrgUser(orguser.*)'] }
+					
+					ready() {
+      super.ready();
+      Polymer.RenderStatus.afterNextRender(this, () => {
+          
+
+      });
+					}
+          
+     getPreSelectedOrg(o){ 
+      return o;
+     }
+     checkOrgUser(ou){
+      console.log(ou);
+     }
+     checkUserSignedin(f, d, c ){
+        // First be sure 3 value has arrived. No need to operate for 
+        if ( f!=undefined && d !=undefined && c!=undefined) {
+          // Check Signed in or not !!?
+          if (!f) { //
+           
+             if (c) { // This 
+                d? this._initSignup(this.navLang):"Device is not ready and didn't want to be ready"
+             } else {
+                this._initSignup(this.navLang)
+             }
+        
+          // User Signed in than  grab  datas
+          } else {
+                  firebase.database().ref('users/' + this.user.uid + '/orgList').on('value', snap=>{ 
+                     if (snap.exists()) {
+                           this.set('orgList', Object.values(snap.val()))
+                     } else {
+                           firebase.database().ref('users/' + this.user.uid + '/orgList/-LIVKVcY2Bd1Csb7NbJ_').set({authorize:true, key:"-LIVKVcY2Bd1Csb7NbJ_",  name:"Test Co."});
+                           firebase.database().ref('orgusers/-LIVKVcY2Bd1Csb7NbJ_/' + this.user.uid).set({admin:false, authorize:true, email:this.udata.email||"", name: this.user.displayName, orgName:"Test Co.", photo:this.user.photoURL, uid: this.user.uid});
+                           this.set('keyOrg', '-LIVKVcY2Bd1Csb7NbJ_');
+                           this.set('organisation', 'Test Co.');
+                           localStorage.setItem('keyOrg', '-LIVKVcY2Bd1Csb7NbJ_');
+                           localStorage.setItem('organisation','Test Co.');
+
+                     }
+            
+                  firebase.database().ref('users/' + this.user.uid + '/waitList').on('value', snap=>{ 
+                   snap.exists()? this.set('waitList', Object.values(snap.val())):[];  });
+                  });
+            }
+          }
+     }
+      
+					_initSignup(country){ 
+
+						    var uiConfigigure = {
+										// Url to redirect to after a successful sign-in.
+										'callbacks': {	
+            	'signInSuccessWithAuthResult': (authResult, redirectUrl)=> {	
+                  var isNewUser = authResult.additionalUserInfo.isNewUser;
+																		//var db = firebase.database();
+																		//var ref = db.ref('users/' + user.uid);
+/*													     ref.once('value', snap=>{
+																			   if (snap.exists()) {
+					                      
+																					   }
+																	  })*/
+
+													 // Do not redirect.
+              console.log(authResult, redirectUrl, isNewUser)
+              this.set('route.path', "/web");
+              return false;
+												}
+           
+										},
+							   credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
+							   //signInSuccessUrl: '/web',
+										'signInOptions': [
+              // TODO(developer): Remove the providers you don't need for your app.
+              {
+                provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                // Required to enable this provider in One-Tap Sign-up.
+                authMethod: 'https://accounts.google.com',
+                // Required to enable ID token credentials for this provider.
+                clientId: "1013602754277-adgqodqe3gds04c3u8f7r8m4mg3r0jla.apps.googleusercontent.com",
+                signInFlow: 'redirect'
+              },
+              {
+                provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+                scopes :[
+                  'public_profile',
+                  'email' ]
+              },
+
+
+              firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+              firebase.auth.EmailAuthProvider.PROVIDER_ID,
+              firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+            ],
+           signInFlow: 'redirect',
+										// Terms of service url.
+										'tosUrl': 'https://visitapp-7ac36.firebaseapp.com/privacy',
+          'privacyPolicyUrl':'https://visitapp-7ac36.firebaseapp.com/privacy'
+								};
+						  
+        // Initialize the FirebaseUI Widget using Firebase.
+        let ui = firebaseui.auth.AuthUI.getInstance();
+        console.log(ui);
+        if (ui===null) {
+           ui = new firebaseui.auth.AuthUI(firebase.auth());
+        }
+        // firebaseui.auth.AuthUI.getInstance();
+        //ui.disableAutoSignIn();
+								// The start method will wait until the DOM is loaded to include the FirebaseUI sign-in widget
+								// within the element corresponding to the selector specified.      
+	       var diw = this.shadowRoot.getElementById('firebaseui-container');
+								ui.start(diw, uiConfigigure); 
+       
+     } 
+     
+     _getKey(){
+          return new Promise((resolve, reject) => {
+             resolve(firebase.database().ref('users/' + this.user.uid + '/orgList').push().key)
+           });      
+      }
+      _saveOrganisation(e) {
+         if (this.organisationName=="" || this.organisationName === undefined) return false;
+       
+         this._getKey().then(key =>{
+           var data1 = {"createdBy": this.user.displayName, "createdId": this.user.uid, "organisationName": this.organisationName, "password": this.b64EncodeUnicode(this.op1), "key" : key};
+           var data2 = {"name": this.organisationName, "authorize":true, "key": key};
+           var data3 = {"name":this.user.displayName, "uid":this.user.uid, "authorize":true, "photo": this.user.photoURL, "orgName": this.organisationName, "email": this.udata.email, "admin":true}
+           var updates = {};
+           updates['/organisation/' + key] = data1;
+           updates['/users/' + this.user.uid + '/orgList/' + key] = data2;
+           updates['/orgusers/' + key + "/"+ this.user.uid] = data3;
+           firebase.database().ref().update(updates);
+          
+           localStorage.setItem('orgName', this.organisationName);
+           localStorage.setItem('keyOrg', key);
+           this.organisation = this.organisationName;
+           this.$.warning.toggleToast('#success');
+           this.op1=this.op2=null;
+           setTimeout(()=>{
+               this.set('route.path', 'web');
+           },3000)
+     
+         })
+      }
+     
+      _sendJoinRequest(o){  
+         if (this.selectedItem.createdId === this.user.uid) {
+           this.$.warning.toggleToast('#organisationExists');
+         } else { 
+            this._getKey().then(key =>{
+              var data1 ={"orgName":this.selectedItem.organisationName, "key": this.selectedItem.key, "authorize": false, "name": this.user.displayName, "photo" : this.user.photoURL, "email" : this.udata.email, "uid": this.user.uid, "connectKey" : key, "admin":false };
+
+              var data2 ={"name":this.selectedItem.organisationName, "key": this.selectedItem.key, "authorize": false, "connectKey": key };
+              var updates = {};
+              updates['users/' + this.selectedItem.createdId + '/waitList/' +  key ] = data1;
+              updates['users/' + this.user.uid               + '/orgList/' + this.selectedItem.key] = data2  
+              updates['orgusers/' +this.selectedItem.key + '/' + this.user.uid ] = data1;   
+              firebase.database().ref().update(updates); 
+              this.$.warning.toggleToast('#success');
+
+            })
+         }
+    }
+     
+     _valueChanged(v){
+       var val = (v.detail.value);
+       if (val.length>=3) {
+         if (this.signedin && this.organisationList.length===0) {
+             var dbref = firebase.database().ref('organisation').orderByChild('organisationName');
+             dbref.once('value', snap=>{
+                 if (snap.exists()) {
+                  var arr = (Object.values(snap.val())).filter(f =>  (f.organisationName.toLowerCase()).startsWith(val.toLowerCase()));
+                  
+                  var newArr = arr.map(m=>{return {"key":m.key,"organisationName":m.organisationName,"createdId":m.createdId}})
+                  this.set('organisationList', newArr); 
+                 }
+             })
+          
+         }
+       } else { this.set('organisationList', [])}
+
+     }
+     
+     selectedOrgChanged(x){
+         var y = x.detail.value; 
+         if (this.udata) {
+          this.organisation = this.udata.orgList[y].name;
+          localStorage.setItem('orgName', this.organisation);
+          localStorage.setItem('keyOrg', y );
+          this.set('keyOrg', y);
+          this.set('route.path', 'web');
+         }
+
+     }
+     
+     __signOut(){
+        firebase.auth().signOut().then(()=>{
+            // The timeout allows the message to be displayed after the UI has
+            // changed to the signed out state.
+            let ui = firebaseui.auth.AuthUI.getInstance();
+            if (ui) ui.delete();
+            localStorage.removeItem('orgName');
+            localStorage.removeItem('keyOrg');
+            this.set('user', null);
+            this.organisation = this.ltext.SelectAnOrganisation+"!";
+
+
+        })
+        .catch((e)=>{
+        });
+     }
+     _confirmUser(x){
+         var i =  x.model.item;
+         var updates = {};
+         updates['users/' + this.user.uid + '/waitList/' + i.connectKey + '/authorize'] = true;
+         updates['users/' + i.uid + '/orgList/' + i.key + '/authorize'] = true;   
+         updates['orgusers/' + i.key + '/' + i.uid + '/authorize'] = true;   
+         firebase.database().ref().update(updates);  
+     }
+     _deleteUserRequest(x){
+         var sure = this.areYouSure();
+         if (sure) {
+          
+         }
+     }
+     _filterWaitList(i){
+        return i.authorize ? false:true;
+     }
+     focusedChanged(f){
+        if (f.detail.value) {
+            Polymer.AppLayout.scroll({ top: 150, behavior: 'silent' });
+        } else {
+            setTimeout(()=>{
+              Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
+            },300);
+            
+        }
+     }
+     b64EncodeUnicode(str) {
+        // first we use encodeURIComponent to get percent-encoded UTF-8,
+        // then we convert the percent encodings into raw bytes which
+        // can be fed into btoa.
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+            function toSolidBytes(match, p1) {
+                return String.fromCharCode('0x' + p1);
+        }));
+      }
+      b64DecodeUnicode(str) {
+          // Going backwards: from bytestream, to percent-encoding, to original string.
+          return decodeURIComponent(atob(str).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+      }
+     areYouSure() {
+						   return window.confirm(this.ltext.AreYouSure);
+					}
+     
+     _orgMembers(){
+             firebase.database().ref('orgusers/' + this.keyOrg).on('value', sn=>{
+                if (sn.exists()) { 
+                    this.set('orgusers', sn.val());
+                } 
+             })  
+     }
+    deleteUnnecessaryUser(u){
+         var i = u.model.item;
+         console.log(i, u, this.orgusers[i.uid]);
+         var sure = this.areYouSure();
+         if (sure) {
+             // in order to delete user's own organisation memeber for EVER !
+             var updates = {};
+             updates['users/' + this.user.uid + '/waitList/' + i.connectKey] = null;
+             updates['users/' + i.uid + '/orgList/' + this.keyOrg ] = null;   
+             updates['orgusers/' +this.keyOrg +  '/' + i.uid ] = null;   
+             firebase.database().ref().update(updates); 
+         }
+     }
+     
+     backToMain(){
+       this.set('route.path', 'web');
+     }
+     calculateAsArrayObject(x){
+         return Object.values(x);
+     }
+     primaryEmailChanged(p){
+         firebase.database().ref('orgusers/' + this.keyOrg + '/' + this.user.uid + '/email').set(this.orguser.email);
+     }
+     primaryPhoneChanged(p){
+         firebase.database().ref('orgusers/' + this.keyOrg + '/' + this.user.uid + '/phone').set(this.orguser.phone);
+     }
+    };
+    customElements.define(JjSignup.is, JjSignup);
+  </script>
+  
+</dom-module>

@@ -1,0 +1,1452 @@
+ <link rel="import" href="../bower_components/polymer/polymer.html">
+ 
+ <link rel="import" href="../bower_components/paper-input-place/paper-input-place.html">
+ <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+ <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+ <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+ <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+ <link rel="import" href="../bower_components/paper-item/paper-item.html">
+ <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+ <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+ <link rel="import" href="../bower_components/paper-button/paper-button.html">
+ <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+ <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+ <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+ <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+ <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+ 
+ <link rel="import" href="../bower_components/app-route/app-location.html">
+
+ <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
+ <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+ <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+ 
+ <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+ <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+ <link rel="import" href="../bower_components/iron-icons/maps-icons.html">
+ <link rel="import" href="../bower_components/iron-icons/editor-icons.html">
+ <link rel="import" href="../bower_components/iron-icons/social-icons.html">
+ <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+ <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+ <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+ 
+ <link rel="import" href="../bower_components/google-map/google-map.html">
+ <link rel="import" href="../bower_components/google-map/google-map-marker.html">
+ <link rel="import" href="../bower_components/paper-tags-input/paper-tags-input.html">
+ <link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box-light.html">
+ <link rel="import" href="../bower_components/mp-calendar/mp-calendar.html">
+ <link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
+ 
+
+ <link rel="import" href="jj-warning.html">
+ <dom-module id="jj-web">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        position: relative;	
+        padding-top: 60px; 
+      
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: -webkit-box;
+          display: -moz-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          @apply(--layout-vertical);
+       }
+
+      
+      paper-input-place{
+              width: 250px;
+            --paper-input-container-color: #062606;
+            --paper-input-container-input-color: #062606;
+            --paper-input-container-focus-color: red;
+            --paper-input-place-prefix-icon-mixin_-_color: red;
+            height: 55px;
+            background: rgba(247, 248, 247, 0.8);
+            border-radius: 10px;
+            margin: 20px 0;
+      }
+      .container {
+        @apply --layout-horizontal;
+        @apply --layout-justified;
+
+      }
+      .flexchild {
+        @apply --layout-flex;
+      }
+     paper-item {
+      cursor: pointer;
+      padding: 0 0;
+     }
+  
+     paper-item.searchClass {
+         
+         @apply (--layout-center);
+         @apply (--layout-horizontal);
+         @apply (--layout-around-justified);
+         width: 95%;
+         position: fixed;
+         z-index: 1;
+     }
+     
+     paper-icon-button {
+         color: blueviolet;
+
+     }
+     paper-icon-button:focus {
+        border-bottom: solid 2px indigo;
+     }
+     paper-icon-button.myButton {
+      	 	z-index: 2;
+         color: red;
+         height: 50px;
+         width: 50px;
+     }
+     
+    
+     paper-input-place.ctrue{   /*     Search Place On/Off*/
+      					opacity: 1;
+								   width: 90%;
+											transition: width 0.9s;
+											-webkit-transition: width 0.9s;
+           z-index: 2;
+           margin: 0;
+     }
+     
+     google-map {
+           position:absolute;
+           height: 150vh;
+           width: 100%; 
+           z-index: 1;
+     } 
+     paper-fab {
+   
+          position: fixed;
+          bottom: 10px;
+          left: 45%;
+          z-index: 2;
+          background-color: #7C4DFF;
+     }
+     paper-dialog {
+          position: absolute;
+          margin: 2px 4px;
+          padding: 10px 5px;
+            
+     }
+     paper-dialog#menuDialog {
+         bottom: 70px;
+         left: 10px;
+     }
+     
+     paper-dialog.adds {
+         width: 100%;
+         top:5px;
+         left:0;
+         padding: 10px 20px;
+     }
+     paper-dialog#companyDetail{
+         position: fixed;
+         width: 100%;
+         bottom:0;
+         left:0;
+         z-index: 2;
+     }
+     paper-dialog#customerSettings, paper-dialog#companyContacts {
+         width: 90%;
+      
+     }
+     paper-dialog#chats {
+         position: fixed;
+         width: 100vh;
+         height: 100vh;  
+     }
+     paper-dialog-scrollable {
+         max-height: 100vh;    
+     }
+     paper-dialog-scrollable#schats {
+         height: 100vh;    
+     }
+     vaadin-combo-box-light {
+         padding: 0 0px;
+         margin-top: 0 0;
+         width: 90%;
+     }
+     paper-radio-group {
+         margin-top: 10px;
+         padding: 0 5px 0 0;
+     }
+     paper-radio-button {
+         padding: 0 3px 0 0;
+         color: pink;
+     }
+     paper-card {
+         padding: 10px 20px;
+     }
+     iron-icon {
+        color:blueviolet;
+        margin-right: 10px;
+     }
+     
+     paper-button.topRight {
+        position: absolute;
+        right: -20px;
+        width: 20px;
+        height: 20px;
+        top: -20px;
+        font-size: 14px;
+        color: #4c046b;
+     }
+     paper-button.topRight1 {
+        position: absolute;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        top: -40px;
+        font-size: 14px;
+        z-index: 2;
+     }
+     paper-button.indigo {
+        background-color: var(--paper-indigo-500);
+        color: white;
+        cursor: pointer;
+        padding: 0;
+     }
+     div.cont{
+        position: fixed;
+        top: 150px;
+        left: 0;
+        width: 50px;
+        height: 100%;
+        z-index: 1;
+     }
+     paper-icon-button.reports {
+       position: relative;
+
+       z-index: 1;
+       height: 50px;
+       width: 50px;
+     }
+     paper-input.fonts {
+        font-size: 10px;
+     }
+     .title {
+       background-color: indigo;
+       color: white;
+       padding: 0 30px;
+     }
+     paper-item-body {
+       padding: 0;
+
+     }
+     iron-icon#emailSuffix{
+       position: absolute;
+
+     }
+     paper-tags-input {
+      z-index: 2;
+      width: 100%;
+      padding-left: 5px;
+     }
+     paper-checkbox{
+        padding: 0 0 0 5px;
+      
+     }
+     paper-radio-button.red, paper-radio-button.blue, paper-radio-button.orange, paper-radio-button.green{
+        width: 20px;
+        height: 15px;
+        padding: 0 5px;
+     } 
+     .red {
+       color: red;
+     }
+     .blue {
+       color: blue;
+     }
+     .orange {
+       color: orange;
+     }
+     .green {
+       color: green;
+     }
+     .rightSide {
+        @apply --layout-horizontal;
+        @apply --layout-end-justified;
+     }
+     .leftSide {
+        @apply --layout-horizontal;
+        @apply --layout-start-justified;
+     }
+     .leftRight {
+       background-color: #bcc7b8;
+       color: black;
+       margin: 5px;
+       border-radius: 10px;
+       padding: 2px 10px;
+       width: fit-content;
+     }
+
+     iron-scroll-threshold {
+        margin-top: 0;
+        padding: 0 2px;
+     }
+     paper-textarea {
+        width: 100%;
+     }
+     				
+    .menzil {
+          margin-left: 25px;
+          --paper-slider-knob-color: var(--paper-blue-900);
+          --paper-slider-active-color: var(--paper-blue-500);
+          --paper-slider-pin-color: var(--paper-blue-500);
+          position: fixed;
+          top:145px;
+          left:80px;
+          color:red;
+          width: 250px;
+      }
+      #menzilim {
+          font-size: 12px;
+          position: fixed;
+          top:85px;
+          left: 180px;
+      }
+
+  
+    </style>
+    
+    <jj-warning id="warning" ltext="{{ltext}}"></jj-warning>
+    <app-location route="{{route}}"></app-location>
+    <template is="dom-if" if="{{getIpLoc}}"> 
+      <iron-ajax
+      auto
+      url="http://api.ipstack.com/check?access_key=4383bf3a375904728ab31a61b8f96afb"
+      handle-as="json"
+      on-last-response-changed="handleResponse"
+      debounce-duration="1300"></iron-ajax>
+    </template>
+    
+    <br />
+    <google-map 
+         id="map"
+         disable-default-ui
+		       map="{{map}}"
+									latitude="[[lat]]" 
+									longitude="[[lng]]" 
+									api-key="[[apiKey]]"
+									additional-map-options='{"gestureHandling" : "greedy"}'
+         zoom=18
+         > 
+            <google-map-marker
+                 map="{{map}}"
+                 drag-events
+                 latitude="{{lat}}" 
+                 longitude="{{lng}}"
+                 icon$="[[importPath]]../images/gpsll.gif"
+                 draggable="true"
+                 on-google-map-marker-dragend="updateLocalstorageLatLng"></google-map-marker>
+                 
+            <template is="dom-if" if="[[opened]]">    
+            <google-map-marker 
+                 id="targetCompanyPointer"
+                 map="{{map}}"
+                 drag-events
+                 marker="{{mymarker}}"
+                 latitude="{{lat1}}" 
+                 longitude="{{lng1}}"
+                 icon$="[[importPath]]../images/tar.gif"
+                 draggable="true"
+                 on-google-map-marker-dragend="getCompanyAddress"></google-map-marker>
+             </template>
+                 
+           		<template id="companyMarkers" is="dom-repeat" items="{{showCustomers}}" delay=300>
+
+                 <google-map-marker 
+                         click-events
+                         map="{{map}}"
+                         id="companyMarkers"
+                         latitude="[[item.lat]]" 
+                         longitude="[[item.lng]]"
+                         animation="DROP"
+                         on-google-map-marker-click="userMarkerClicked"
+                         icon='[[calculateIcon(item, index)]]' >                      
+                 </google-map-marker>
+              
+            </template> 
+            
+				</google-map> 
+				
+
+				
+    <paper-item class="searchClass">
+    
+   	<template is="dom-if" if="{{visits}}">
+        <paper-icon-button class="myButton" icon="search"></paper-icon-button>
+        <paper-input-place class="ctrue" hide-error place="{{place}}" api-key="[[apiKey]]" label="[[ltext.ChangeSearchPlace]]" on-lat-lng-changed="searchPlaceChangedd" autocapitalize >
+        </paper-input-place>
+        <paper-icon-button class="myButton" icon="maps:my-location" on-tap="setMyLocations"></paper-icon-button>
+				</template>
+				<template is="dom-if" if="{{!visits}}">
+
+				     <paper-tags-input 
+				      id="tagsid"	
+				      value="{{newtag}}"			     
+          tags = "{{tags}}"
+          label="[[ltext.SearchNewCustomer]]"
+          placeholder="[[ltext.KeyWords]]"        
+         ></paper-tags-input>
+         <paper-icon-button style="z-index: 2; width: 40px; height: 40px;" icon="add" on-tap="tagsAdded" ></paper-icon-button>
+         <paper-icon-button style="z-index: 2; width: 40px; height: 40px;" icon="send" on-tap="tagsChanged"></paper-icon-button>
+         
+         <div id="menzilim" class= "layout vetical center-justified">
+           <div class="menzil layout horizontal center-justified"> 
+              <paper-icon-button icon="remove" on-tap="reducePlus" attrb="reduce"></paper-icon-button>
+              <paper-slider  value="{{menzil}}" min="0" max="100"  pin snaps ></paper-slider>
+              <paper-icon-button icon="add"  on-tap="reducePlus" attrb="add"></paper-icon-button>
+              <div>[[menzil]] Km</div>
+           </div>
+           <div style="background-color: green; padding:0 10px; color:white;">[[ltext.PeopleSearchRadius]]</div>
+        </div>
+				</template>
+				<div class="cont">
+
+			  	<paper-icon-button id="search" class="reports" icon="icons:explore" on-tap="_searchVisits"></paper-icon-button>
+			   <paper-icon-button id="vizit" class="reports" src$="[[importPath]]../images/handshake.png" on-tap="_makeVisits"></paper-icon-button>
+			  	<paper-icon-button id="chats" class="reports" icon="communication:forum" on-tap="_openChat"></paper-icon-button>
+			  	<paper-icon-button id="calendar" class="reports" icon="icons:perm-contact-calendar" on-tap="_showAppointments"></paper-icon-button>
+			  	<a href="/reports"><paper-icon-button id="reports" class="reports" icon="editor:insert-chart" on-tap="_makeVisits"></paper-icon-button></a>
+				</div>
+				
+				<template is="dom-if" if="[[calculateBadge(orguser)]]"> 
+       <paper-badge for="chats" label="[[orguser.messCount]]"></paper-badge>
+				</template>
+				
+				<paper-tooltip for="vizit" position="right" >[[ltext.Visit]]</paper-tooltip>
+			 <paper-tooltip for="search" position="right">[[ltext.SearchNewCustomer]]</paper-tooltip>
+			 <paper-tooltip for="chats" position="right">[[ltext.SendMessageToAll]]</paper-tooltip>
+			 <paper-tooltip for="calendar" position="right" >[[ltext.Appointments]]</paper-tooltip>
+			 <paper-tooltip for="reports" position="right" >[[ltext.Reports]]</paper-tooltip>
+				
+			 </paper-item>
+	   <paper-fab icon="add" on-tap="addACustomer"></paper-fab>		
+      
+   <paper-dialog id="companyAdd" class="adds" opened="{{opened}}">
+      <span style="font-size:18px; font-weight: bolder;padding: 0 0;">[[ltext.AddACustomer]]</span><hr style="margin-top: 0;"/>
+      <vaadin-combo-box-light allow-custom-value
+             label="[[ltext.EnterCompany]]"
+             items="{{companyList}}"
+             item-label-path="name"        
+             selected-item="{{selectedItem}}"
+             value="{{company.name}}"
+             on-selected-item-changed="selectedItemChanged" >
+            <paper-input placeholder="[[ltext.EnterCompany]]" on-value-changed="_SearchCompanyAround" class="input" autocapitalize=words>
+            
+            <iron-icon icon="icons:search" slot="prefix" prefix></iron-icon>
+            <paper-icon-button slot="suffix" icon="clear" class="clear-button"></paper-icon-button>
+          </paper-input>
+      </vaadin-combo-box-light> 
+      <paper-radio-group selected="{{company.type}}" fallback-selection="customer">
+       <paper-radio-button name="customer">{{ltext.Customer}}</paper-radio-button>
+       <paper-radio-button name="supplier">{{ltext.Supplier}}</paper-radio-button>
+       <paper-radio-button name="other">{{ltext.Other}}</paper-radio-button>
+      </paper-radio-group><br />
+      <span style="font-size:10px; padding: 0 10px 0;">{{company.address}}</span>
+     <div class="buttons">
+       <paper-button class= "indigo" raised dialog-dismiss>{{ltext.Cancel}}</paper-button>
+       <paper-button class= "indigo" raised on-tap="saveNewCustomer" dialog-confirm autofocus>{{ltext.Save}}</paper-button>
+     </div>
+    
+   </paper-dialog>
+   
+   <paper-dialog id="companyDetail" modal>
+
+     <paper-item-body two-line>
+      <div class="flex" style="font-size: 22px; color:darkblue; font-weight: bolder;padding-left: 10px;">{{company.name}} <paper-button class="topRight indigo" dialog-confirm autofocus>X</paper-button> <br/><hr/></div>
+      <div secondary class="container">
+         
+          <template is="dom-if" if="[[company.phone]]"> 
+
+          <a href="tel:[[company.phone]]"><paper-icon-button id="call" icon="communication:call" alt="[[ltext.Call]]"></paper-icon-button></a> 
+     <!--      <span >[[ltext.Call]] </span>-->
+            
+ 
+          </template>
+          
+          <template is="dom-if" if=[[visits]]>
+          <paper-icon-button id="visit" src$="[[importPath]][[calculateVisitIcon(visitStatus)]]" on-tap="visitCustomer" alt="[[ltext.Visit]]"></paper-icon-button>
+          </template>
+          <template is="dom-if" if=[[company.contacts]]>
+          <paper-icon-button id="visit" icon="supervisor-account" on-tap="companyContacts" alt="[[ltext.Visit]]"></paper-icon-button>
+          </template>
+        
+          <paper-icon-button id="appointment" icon="alarm-add" on-tap="_swichAddApp" alt="[[ltext.Appointments]]"></paper-icon-button>
+          
+          <template is="dom-if" if=[[!visits]]>
+            <paper-icon-button id="addAsCustomer" icon="assignment-turned-in" on-tap="addACustomerPre" alt="[[ltext.Appointments]]"></paper-icon-button>
+          </template>
+          
+          <template is="dom-if" if="[[visitStatus]]">     
+          <paper-badge for="visit" icon="update" label="[[ltext.Visit]]"></paper-badge>
+          </template>
+          <template is="dom-if" if="[[company.website]]">  
+           <a href="[[company.website]]" target="_blank"><paper-icon-button id="website" icon="social:public" alt="[[ltext.Call]]"></paper-icon-button></a>
+          </template>
+          <a href="https://www.google.com/maps?saddr=My+Location&daddr=[[company.lat]],[[company.lng]]" target="_blank"><paper-icon-button class="dirx" icon = "maps:directions"></paper-icon-button></a>
+          <paper-icon-button icon="settings-applications" on-tap="customerSettings"></paper-icon-button>
+          <template is="dom-if" if="[[visits]]"> 
+          <paper-icon-button icon="delete-forever" on-tap="deleteCustomer" alt="[[ltext.Delete]]"></paper-icon-button>
+          </template>
+      </div>
+     </paper-item-body>
+
+   </paper-dialog>
+   <paper-dialog id="customerSettings">
+     <div class="layout ">
+      <paper-input label="[[ltext.EnterCompany]]" value="{{company.name}}"></paper-input>
+
+        <paper-input label="Phone Number" value="{{company.phone}}"><iron-icon icon="communication:call" slot="prefix"></iron-icon></paper-input>
+        <paper-input label="Web Site" value="{{company.website}}"><iron-icon icon="social:public" slot="prefix"></iron-icon></paper-input>
+        <iron-icon icon="list" prefix></iron-icon> 
+        <paper-radio-group selected="{{company.type}}">
+          
+          <paper-radio-button name="customer">{{ltext.Customer}}</paper-radio-button>
+          <paper-radio-button name="supplier">{{ltext.Supplier}}</paper-radio-button>
+          <paper-radio-button name="other">{{ltext.Other}}</paper-radio-button>
+        </paper-radio-group><br/><br/>
+        <div class="buttons container">
+         <span class="flexchild"></span>
+         <paper-button class="indigo" dialog-dismiss>{{ltext.Cancel}}</paper-button>
+         <paper-button class="indigo" on-tap="updateCustomerData" dialog-confirm autofocus>{{ltext.Save}}</paper-button>
+        </div>
+
+   
+  
+    </div>
+   </paper-dialog>
+   <paper-dialog id="companyContacts">
+    <div class="layout ">
+    <template is="dom-repeat" items="{{calculateAsArrayObject(contacts)}}">
+     <paper-item-body two-line>
+     <div class="container"><span class="flexchild">[[item.name]], [[item.jobTitle]]</span>
+     
+     <paper-button class="indigo" on-tap="_deleteContact">[[ltext.Delete]]</paper-button>
+     </div>
+     
+     <div secondary>
+          <template is="dom-if" if="[[item.phone]]"> 
+          <a href="tel:+[[item.phone]]"><paper-icon-button id="call" icon="communication:call" alt="[[ltext.Call]]"></paper-icon-button></a>
+          </template>
+          <template is="dom-if" if="[[item.phone]]"> 
+          <a href="https://api.whatsapp.com/send?phone=+[[item.phone]]" target="_blank"><paper-icon-button id="whatsapp" src$="[[importPath]]../images/whatsapp-48.png" alt="[[ltext.Call]]"></paper-icon-button></a>
+          </template>
+          <template is="dom-if" if="[[item.email]]"> 
+          <a href="mailto:[[item.email]]"><paper-icon-button id="email" icon="communication:email" alt="[[ltext.Call]]"></paper-icon-button></a>
+          </template>
+          
+     </div>
+     </paper-item-body><hr/>
+    </template>
+    <paper-button class="indigo" on-tap="_addContact">&nbsp;[[ltext.AddContact]]&nbsp;</paper-button>
+    </div>
+   </paper-dialog>
+   
+
+   <paper-dialog id="visitDetail" class="adds">
+      <paper-item-body two-line>
+               <template is="dom-if" if="{{!addContact}}"> 
+                  <span class="title">[[ltext.MeetingDate]] : [[startTime]]</span><br/>
+                  <paper-radio-group selected="{{personType}}" fallback-selection="face" >
+                   <paper-radio-button name="face">[[ltext.MeetFace]]</paper-radio-button>
+                   <paper-radio-button name="call">[[ltext.MeetCall]]</paper-radio-button>
+                  </paper-radio-group>
+                </template>           
+                <vaadin-combo-box-light allow-custom-value
+                      label="[[ltext.EnterPersonName]]"
+                      items="{{calculateAsArrayObject(contacts)}}"
+                      item-label-path="name"        
+                      selected-item="{{person1}}"
+
+                      on-selected-item-changed="personSelectedItemChanged" >
+                      
+                     <paper-input label="[[ltext.EnterPersonName]]"  class="input" autocapitalize=words value="{{personName}}">
+                     <iron-icon icon="icons:search" slot="prefix" prefix></iron-icon>
+                     <paper-icon-button slot="suffix" icon="clear" class="clear-button"></paper-icon-button>
+                   </paper-input>
+                     
+               </vaadin-combo-box-light>
+                     <paper-item> 
+                     <paper-input label="[[ltext.JobTitle]]" class="input fonts" autocapitalize=words value="{{personProf}}"></paper-input>
+                     <paper-input label="[[ltext.Email]]" class="input fonts" value="{{meetMail}}"  >
+                     <iron-icon class="" icon="mail" slot="prefix"></iron-icon>
+                      <template is="dom-if" if="[[emailSuffix]]"> 
+                      <div style="position: relative; font-size: 12px; right:-30px;" slot="suffix">[[calculateEmailfuffix(company.website)]]</div>
+                      
+                      <iron-icon id="emailSuffix" icon="clear" slot="suffix" style="position: relative;top:-20px;" on-tap="deleteEmailSuffix"></iron-icon>
+                      </template>
+                     </paper-input></paper-item>
+                     <paper-input id="mobileNumber" label="[[ltext.YourMobile]]" value="{{mobileNumber}}"><iron-icon slot="prefix" icon="add"></iron-icon>
+                     
+                     <paper-icon-button slot="suffix" icon="clear" class="clear-button"></paper-icon-button></paper-input>
+            <div secondary>
+                <template is="dom-if" if="[[!addContact]]">
+               
+                 <paper-textarea label="[[ltext.NotesCustomer]]" value='{{notesCustomer}}' rows=2></paper-textarea>
+                 <paper-item class="container"> 
+               <span class="flexchild">[[ltext.ShareWithCustomer]]</span> <span>[[calculateYesNo(sendMail)]] &nbsp;</span><paper-toggle-button checked="{{sendMail}}"></paper-toggle-button> </paper-item>           
+                 <paper-textarea label="[[ltext.NotesPrivate]]" value='{{notesPrivate}}'></paper-textarea>
+                 <div>[[ltext.ThisIsPrivate]]</div>
+                </template>
+            </div>
+            <div class="container"> 
+            <span class="flexchild"></span>
+            <paper-button class="indigo" raised  on-tap="_saveMeeting" >[[ltext.Save]]</paper-button>
+      <!--      <paper-button class="indigo" raised dialog-confirm autofocus >[[ltext.Exit]]</paper-button>-->
+            </div>
+      </paper-item-body>
+    
+   </paper-dialog>
+   
+   <paper-dialog id="addShowAppointments" class="adds">
+       <paper-dialog-scrollable> 
+      <paper-item-body two-line>
+      <template is="dom-if" if="{{addApp}}"> 
+      <paper-button class="title" >[[ltext.AppointmentDate]] :</paper-button>[[appDate]]
+            <mp-calendar id="mpcalendar" day-labels='["Mo","Tu","We","Th","Fr","Sa","Su"]'
+              
+                    show-days-in-month=35
+                    chosen ="{{appDate}}"
+                    first-day-of-week="1"
+                    disabled-weeks="[7]"
+                    events-object="[[eventsObject]]"
+                    >
+           </mp-calendar>
+           <br/> 
+<!--           events-file="https://visitapp-7ac36.firebaseio.com/appointments/[[keyOrg]].json"-->
+         
+         <paper-item style="width:100%;">
+         <paper-time-input format="24" value="{{time24}}" label="[[ltext.Time]]" style="margin-right: 10px;"></paper-time-input> 
+         <paper-input value="{{company.name}}" label="[[ltext.EnterCompany]]"></paper-input>
+         </paper-item>
+         <paper-radio-group selected="{{category}}" fallback-selection="red" >[[ltext.Category]]
+            
+             <paper-radio-button name="red"><span class="red">*****</span></paper-radio-button>
+             <paper-radio-button name="orange"><span class="orange">****</span></paper-radio-button>
+             <paper-radio-button name="green"><span class="green">***</span></paper-radio-button>
+             <paper-radio-button name="blue"><span class="blue">**</span></paper-radio-button>
+
+         </paper-radio-group> 
+
+            <div secondary>
+               <paper-textarea label="[[ltext.NotesPrivate]]" autocorrect value='{{notesPrivate}}' rows=2></paper-textarea>
+            </div>
+            <div class="container"> 
+            <span class="flexchild"></span>
+            <paper-button class="indigo" raised  on-tap="_saveAppointment" >[[ltext.Save]]</paper-button>
+            </div>
+          </template>
+          <template is="dom-if" if="[[!addApp]]">
+            <paper-item on-tap="_swichAddApp" style="width: min-content;" > 
+            <iron-icon icon="alarm-add" style="width: 50px; height: 50px;"></iron-icon><paper-button class="indigo"  reised="5" >[[ltext.AddAppointment]]</paper-button></paper-item>
+          
+            <template is="dom-repeat" items="[[eventsObject]]">
+               <paper-item-body two-line>
+               
+               <div class="container" style="color:[[item.category]]"><span class="flexchild">[[_calculateTime(item.time)]], [[item.title]]</span>
+ 
+               </div>
+
+               <div secondary>
+                 <span> [[item.content]]</span><br><hr/>
+
+               </div>
+               </paper-item-body>
+            
+             </template>
+             
+          </template>
+      </paper-item-body>
+    </paper-dialog-scrollable>
+   </paper-dialog >
+  
+   <paper-dialog id="chats">
+    <paper-button class="topRight1 indigo" dialog-confirm autofocus>X</paper-button> <br/><br/>
+    <iron-scroll-threshold id="mytras" on-lower-threshold="loadMoreData" lower-threshold="100" lower-triggered="{{nearBottom}}" scroll-target="document">
+    <paper-dialog-scrollable id="schats">
+    <template id="document" is="dom-repeat" items="[[chatMessages]]" sort='showLastItemOnTop'> 
+    
+     <div class$="[[_leftRight(item.uid)]]">
+       <div class="leftRight" >
+         <paper-item-body two-line style="min-height: 0;">
+          <div>[[_calculateItemAutor(item.uid, item.autor)]]</div>
+          <div secondary>[[item.message]] <span style="font-size: 8px; font-style: italic">[[_calculateTime(item.time)]]</span></div>
+         </paper-item-body>
+       </div>
+     </div>
+    </template>
+    </paper-dialog-scrollable>
+    </iron-scroll-threshold>
+
+				  <template is="dom-if" if="[[nearBottom]]">
+          <paper-progress indeterminate></paper-progress>
+          <div>{{ltext.Loading}}</div>
+      </template>
+    <paper-input style="position: fixed; top: 20px; left:0; width: 93vh; background-color: white; color: black; margin-bottom: 0;" value="{{chatMessage}}" label="[[ltext.SendMessageToAll]]" on-keydown="_saveChatMessage"> 
+    <paper-icon-button icon="send" class="indigo" on-tap="_saveChatMessage" slot="suffix"></paper-icon-button>
+    </paper-input>
+
+   </paper-dialog>
+					 
+</template> 
+  <script>
+    class JjWeb extends Polymer.Element { 
+        static get is() { return 'jj-web';}
+        static get properties() { return { 
+       smallScreen:{
+								   type:Boolean
+							 },
+							 lat:{
+									  type:Number,
+									  notify:true
+								},
+								lng:{
+									  type:Number,
+									  notify:true
+								},
+   					lat1:{
+									  type:Number,
+									  notify:true
+								},
+								lng1:{
+									  type:Number,
+									  notify:true
+								},
+        opened:{  //target company pointer show/off
+           type:Boolean,
+           value:false,
+           observer:'targetCompanyPointer'
+        },
+        customerType:{
+            type:String,
+            value:"customer"
+        }, 
+        company:{
+            type:Object,
+            value() {return {};}
+        },
+        visitStatus:{
+            type:Boolean,
+            value:false
+        },
+        person:{
+            type:Object,
+            value() {return {}}
+        },
+        emailSuffix:{
+            type:Boolean,
+            value:true
+        },
+        tags:{
+           type:Array,
+           value() {return localStorage.getItem('tags') ? localStorage.getItem('tags').split(','):['pharmacy']}
+        },
+        tempt:{
+            type:Object,
+            value() {return{};}
+        },
+        visits:{
+            type:Boolean,
+            value:true,
+            notify:true
+        },
+        customers:{
+            type:Array,
+            notify:true
+        },
+        targetCustomers:{
+            type:Array,
+            value() {return [];}
+        },
+         dataLimit:{
+            type:Number,
+            value:0
+         },
+         organisation:{
+            type:String,
+            notify:true
+         },
+         menzil:{
+            type:Number,
+            value:5
+         },
+         orguser:{
+            type:Object,
+            notify:true
+         },
+         orgusers:{
+            type:Object,
+            notify:true
+         }, 
+         sendMail:{
+            type:Boolean,
+            value:true
+         },
+         getIpLoc:{
+            type:Boolean,
+            value:false
+         }
+        
+        }}
+     
+       static get observers() {
+        return [// TDO to check values - DETELE Later
+                'checkUserSignedIn(signedin, keyOrg)',
+                'orgUsersHasAChanges(orgusers.*.getPos)'
+               ]
+       }
+     
+      ready() {
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, () => {
+              if (parseFloat(localStorage.getItem('lat'))) { 
+                  
+                  this.lat1=this.lat=parseFloat(localStorage.getItem('lat'));
+                  this.lng1=this.lng=parseFloat(localStorage.getItem('lng'));
+              } else {
+                  this.lat1=this.lat=40.355246;
+                  this.lng1=this.lng=28.932174;
+                  this.set('getIpLoc', true)
+              }
+        }); 
+    }
+     
+    _caculateMarkers(){
+         this.set('showCustomers', this.visits ? this.customers:this.targetCustomers);
+    }
+
+    checkUserSignedIn(s, keyOrg){
+        // In order to send calender data retrive   
+        if (s && keyOrg !=undefined) {
+           var dbref = firebase.database().ref( 'customers/' + keyOrg ).on('value', snap=>{
+                 snap.exists()? this.set('customers', Object.values(snap.val())): this.set('customers',[]) ;
+                 
+                 this._caculateMarkers();
+           })
+         
+        }
+       // Retrive Org users. to follow some org users position, messages etc.
+       if (s && keyOrg ) {
+          firebase.database().ref('orgusers/' + keyOrg).on('value', snap=>{
+             this.set('orgusers', snap.val());
+             this.set('orguser', (snap.val())[this.user.uid])
+                if (!this.orguser) {
+                   this.userRemovedFromOrganisation();
+                } 
+               
+           
+          })
+          
+         
+       }
+    }
+    targetCompanyPointer(t,old){  // TODO : Need to study more how to remove and re open target company pointer
+
+       if (old !=undefined) {
+           
+           if (!t) {
+             this.$.map.clear();
+           }
+       }
+        
+
+    }
+     
+    _getKey(path){
+      return new Promise((resolve, reject) => {
+             resolve(firebase.database().ref(path).push().key);
+      }); 
+     
+    }
+    //Saving new customer
+    saveNewCustomer(){
+     
+       if (this.company.name){
+            var path = 'customers/' + this.keyOrg ;
+            var dbref = firebase.database().ref(path);
+            this._getKey(path).then(key =>{
+                var obj = {"name": this.company.name, "address": this.company.address, "lat":this.lat1, "lng" : this.lng1, "type": this.company.type, "key": key, "phone": this.tempt.phone||"", "website":this.tempt.website||"", "placeId":this.tempt.placeId||"", "staffUid":this.user.uid, "staffName":this.user.displayName };
+                 dbref.child(key).set(obj);
+                 this.$.warning.toggleToast('#success');
+                 this.set('company', {});
+            }); 
+        }
+    }
+		  searchPlaceChangedd(x) {       
+									if (x.detail.value.lat != 0) {
+														this.set("lat", parseFloat(x.detail.value.lat));
+														this.set("lng", parseFloat(x.detail.value.lng));
+              this.showLoginButton=true;              
+										}
+						}
+     
+     addacompanyVisit(x) {
+         this.$.menuDialog.close();
+         this.$.companySelect.open();
+     }
+     addACustomerPre(){
+        this.lat1 = this.company.lat; this.lng1= this.company.lng;
+        this.tempt={};
+        this.set('tempt.phone', this.company.phone||"") ;
+        this.set('tempt.website', this.company.website||"") ;
+        this.set('tempt.placeId', this.company.placeId) ;
+        this.addACustomer();
+     }
+     addACustomer(){ 
+        console.log(this.organisation, this.keyOrg)
+        if (!this.keyOrg || !this.signedin) { 
+            this.$.warning.toggleToast('#selectAnOrganisation');
+            setTimeout(()=>{
+                 this.set('route.path','/signup');
+            },3000);
+            
+        } else {
+             this.getCompanyAddress();
+             // this.$.menuDialog.close(); // in order to close paper-dialog, but not now. 
+             this.$.companyAdd.open();
+        }
+
+     }
+     
+     
+     _SearchCompanyAround(keyword){
+      
+        var key =  keyword.detail.value;
+        if(key) if (key.length>=3) { 
+           setTimeout(()=>{    
+           // First retrive places around with google api
+           var request = {
+                location : new google.maps.LatLng(this.lat,this.lng),
+                rankBy: google.maps.places.RankBy.DISTANCE,
+                keyword: key
+            }
+            var service = new google.maps.places.PlacesService(this.map);
+            service.nearbySearch(request, (results, status)=>{
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                 
+                     this.set('companyList', results);
+                }
+                           
+            });
+          },900)
+       }
+     }
+     
+     updateLocalstorageLatLng() {
+         localStorage.setItem('lat', this.lat);
+         localStorage.setItem('lng', this.lng);
+         if (!this.visits) this.tagsChanged();
+     }
+
+      toggleMenu(){
+          this.$.menuDialog.toggle();
+      }
+
+     
+     setMyLocations(ml){
+           if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition((pos)=>{
+               
+               this.lat=pos.coords.latitude, this.lng=pos.coords.longitude;
+               this.lat1=pos.coords.latitude, this.lng1=pos.coords.longitude;
+               this.updateLocalstorageLatLng(); // Updates Lat n lng at localstorages
+               this.showLoginButton=true;
+              });
+           } else { 
+               console.log("Geolocation is not supported by this browser.");
+           }
+      }
+     getCompanyAddress(){
+
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({latLng: {lat:this.lat1,lng:this.lng1} }, (responses)=> {
+            if (responses && responses.length > 0) {
+													 this.set('company.address', responses[0].formatted_address);
+            } else {
+               console.log('Cannot determine address at this location.');
+            }
+          });
+     }
+     
+    calculateIcon(item,inx){ 
+        if(item) {
+             //Get only first name of company to publish 
+             var m = item.name;
+             var i = this.visits ? ((item.type === "customer") ? "#0a0082":(item.type==="supplier")? "#841942":"#325d32"): "#9765b1"  ; 
+             var n = m.length <12 ? m: m.substring(0, 12);
+             var lat=item.lat; var lng= item.lng;        
+             var x = document.createElement("CANVAS")
+             var ctx = x.getContext("2d");
+             var w = ctx.measureText(n).width + 10;
+
+             x.width= w
+             x.height=25;
+     
+             ctx.fillStyle = i;
+             ctx.fillRect(0, 0, w, 15)
+
+             var gr = ctx.createLinearGradient(0, 0, w, 0);
+             gr.addColorStop("0", "white");
+
+             // Fill with gradient
+             ctx.fillStyle = gr;
+
+
+             ctx.fillText(n, 5, 10);
+
+             ctx.beginPath(); 
+             ctx.lineWidth = "1";
+             ctx.strokeStyle = i ;
+             ctx.moveTo(w/2-5, 15);
+             ctx.lineTo(w/2, 25);
+             ctx.lineTo(w/2+6, 15);
+             ctx.stroke(); // Draw it
+             ctx.fillStyle = i;
+             ctx.fill()
+         return ctx.canvas.toDataURL();
+        }
+     }
+     userMarkerClicked(x){
+          this.$.companyDetail.open();
+          if (this.visits) {
+              this.set('company', x.model.item);
+              var dbref = firebase.database().ref( 'customers/' + this.keyOrg +'/'+ this.company.key + '/contacts');     
+              dbref.on('value', snap=> {
+                 if (snap.exists()) {
+                    this.set('contacts', snap.val());
+                 }
+              })
+          } else {
+            let pi = x.model.item.placeId;
+            let service = new google.maps.places.PlacesService(this.map);
+            let request = {placeId: pi};
+            service.getDetails(request, (c)=>{
+              this.set('company', { name: c.name, phone:c.international_phone_number, website:c.website, lat: c.geometry.location.lat(), lng:c.geometry.location.lng(), placeId: c.place_id });
+             })
+          
+          }
+          
+     }
+     getAnyVisitExist(n){
+          return new Promise((resolve, reject) => {
+           firebase.database().ref('meetings/' + this.keyOrg)     .orderByChild('company').equalTo(n).once('value', snap=>{
+              if (snap.exists()) {  
+                 Object.values(snap.val()).length >1 ? reject('#thisCustomerHasMoreThanOneMeeting') : resolve('#success');
+              } else {
+                 resolve('#success');
+              }
+             })
+          }); 
+     }
+     
+		   deleteCustomer(x) {
+          var sure = this.areYouSure();
+          if (sure){
+              this.getAnyVisitExist(this.company.name).then( ev=> {
+                this.$.companyDetail.close();
+                firebase.database().ref('customers/' + this.keyOrg +  '/' + this.company.key ).set(null);
+                this.set('company', {});
+                this.$.warning.toggleToast(ev);
+              }).catch(err=> {
+                this.$.warning.toggleToast(err);
+              });
+
+          } 
+     }
+     selectedItemChanged(x){
+        if (this.selectedItem) {
+         
+             this.company.address = this.selectedItem.vicinity;
+             this.lat1 = this.selectedItem.geometry.location.lat();
+             this.lng1 = this.selectedItem.geometry.location.lng();
+             this.company.name = this.selectedItem.name;
+             // Neeed to fix the poin on map.
+             var bounds = new google.maps.LatLngBounds();
+             bounds.extend({lat:this.lat, lng:this.lng});
+             bounds.extend({lat:this.lat1, lng:this.lng1});
+             this.map.fitBounds(bounds);
+            this.getMoreDetailAboutCompany(this.selectedItem);
+
+        }
+     }
+     
+     personSelectedItemChanged(x){
+        let person = x.detail.value;
+        if (x.detail.value){
+            this.set('personName', person.name);
+            this.set('personProf', person.jobTitle);
+            this.set('meetMail', person.email);
+            this.set('mobileNumber', person.phone);
+            if (person.email.indexOf('@') != -1 ) this.emailSuffix=false;
+         
+        }
+     }
+     
+     getMoreDetailAboutCompany(selItem){
+        if (selItem !==null) {
+             var request= {
+                placeId: selItem.place_id
+             }
+             var service = new google.maps.places.PlacesService(this.map);
+             service.getDetails(request, (place, status)=>{
+             if (status == google.maps.places.PlacesServiceStatus.OK) {
+                 this.tempt={};
+                 this.set('tempt.phone', place.international_phone_number||"") ;
+                 this.set('tempt.website', place.website||"") ;
+                 this.set('tempt.placeId', place.place_id) ;
+             }
+             });
+       }
+      
+     }
+     
+     
+     
+     areYouSure() {
+						   return window.confirm(this.ltext.AreYouSure);
+					}
+     
+     getLocalDate(date){
+        var options = {
+            weekday: "short",
+            year: "numeric",
+            month: "2-digit",
+            day: "numeric",
+            hour:"numeric",
+            minute:"2-digit"
+            };
+        return date.toLocaleDateString(navigator.language, options);
+     }
+     
+     visitCustomer(){
+        this.visitStatus= !this.visitStatus;
+      
+        this.addContact = false;
+        this.visitStatus ? this.$.visitDetail.open(): this.$.visitDetail.close();
+      
+        this.startTime = this.getLocalDate(new Date());
+        this.personName = this.personProf = this.mobileNumber = this.meetMail = this.endTime =""
+        this.start = (new Date()).getTime();
+     }
+     calculateVisitIcon(s){
+         this.emailSuffix = true;
+         return s ? "../images/pause.png":"../images/handshake.png";
+     }
+     
+     _saveMeeting(){
+        this.endTime = this.getLocalDate(new Date());
+        setTimeout(()=>{   
+         
+        let suffix = this.calculateEmailfuffix(this.company.website)||"";       
+        let meetMail = this.meetMail==="" ? "": this.emailSuffix ? this.meetMail + (suffix ==="" ? "": suffix): this.meetMail; 
+         
+        var dbref = firebase.database().ref('customers/' + this.keyOrg );
+        var mtref = firebase.database().ref('meetings/' + this.keyOrg );
+        // Check this contact is exists and if not exists save as a new contact
+        var contactDet = {email: meetMail , jobTitle: this.personProf||"", name:this.personName||"", phone:this.mobileNumber||""}
+         
+        if (!this.company.contacts){ 
+            dbref.child(this.company.key + '/contacts').push(contactDet);
+        } else {
+           // if this contact is exist, update it with its own key. If not exists then push it as new. 
+           let exist=false; 
+           Object.keys(this.contacts).forEach((key, inx)=>{
+               if (this.contacts[key].name===this.personName) {
+                   exist=true;
+                   dbref.child(this.company.key + '/contacts/' + key ).set(contactDet);
+               }            
+               if (inx=== Object.keys(this.contacts).length-1 && !exist ) {
+                   dbref.child(this.company.key + '/contacts').push(contactDet);
+               }
+                
+             
+           })          
+        } 
+        if (!this.addContact) {
+           // Adding meeting detail. 
+           dbref.child(this.company.key + '/lastMeeting').set((new Date()).getTime());
+           mtref.push({"name": this.personName, "start": this.start, "end":(new Date()).getTime(), "type":this.personType, "notesCustomer": this.notesCustomer||"", "notesPrivate" :this.notesPrivate||"", "company": this.company.name, "staffName": this.user.displayName, "staffUid":this.user.uid,"replyTo":this.orguser.email, "replyPhone":this.orguser.phone||"","orgKey": this.keyOrg, "orgName":this.organisation, "lang":this.udata.lang ,"meetMail": meetMail , "companyKey": this.company.key, "filter": this.company.key+ "@" + this.keyOrg, phone:this.mobileNumber||"", sendMail:this.sendMail});  
+            this.set('emailSuffix', true);          
+            this.set('notesCustomer',"");
+            this.set('notesPrivate',"");
+         }
+          this.$.visitDetail.close()
+        this.$.warning.toggleToast('#success');
+       },900)
+      
+     }
+     calculateEmailfuffix(w){
+       // Check web site exists or not. If exists, than split the domain.   
+       if (w!=undefined) {
+          return  w.length>0? "@" + (w.replace(/www.|https:|http:|\/\//g,'')).split('/')[0]:"";
+       } 
+    }
+     
+     customerSettings(){
+        this.$.customerSettings.open();
+     }
+     deleteEmailSuffix() {
+        this.emailSuffix = false;
+     }
+     updateCustomerData(x) {      
+        var updates = {};
+        updates['customers/' + this.keyOrg + '/' + this.company.key + '/name'] = this.company.name;
+        updates['customers/' + this.keyOrg + '/' + this.company.key + '/type'] = this.company.type;
+        updates['customers/' + this.keyOrg + '/' + this.company.key + '/phone'] = this.company.phone||"";
+        updates['customers/' + this.keyOrg + '/' + this.company.key + '/website'] = this.company.website||"";
+        firebase.database().ref().update(updates);
+     }
+     _makeVisits(x) {
+        this.visits = true;
+        this._caculateMarkers();
+     }
+     _searchVisits(){
+         this.visits = false;
+         this.tagsChanged();
+         
+     }
+     tagsAdded(t){
+         this.shadowRoot.getElementById('tagsid').add(this.newtag);       
+     }
+     tagsChanged(t) {
+        this.showCustomers=[]
+        if (this.tags.length>0 && !this.time) {
+          this.time = true;
+          localStorage.setItem('tags', this.tags.toString());
+          let keys =  this.tags.length>1 ? this.tags.toString() : this.tags[0];
+           // First retrive places around with google api
+          let request = {
+                location : new google.maps.LatLng(this.lat, this.lng),
+                radius: this.menzil*1000,
+                keyword: keys
+          }
+          let service = new google.maps.places.PlacesService(this.map);
+          service.nearbySearch(request, (results, status)=>{
+             if (status == google.maps.places.PlacesServiceStatus.OK) { 
+              
+                 this.set('targetCustomers', results.map( x=> {return {name:x.name, type:"target", lat:x.geometry.location.lat(), lng:x.geometry.location.lng(), placeId:x.place_id}}) );
+                 this.bounds = new google.maps.LatLngBounds();
+                 this._caculateMarkers();
+             }
+               this.time=false;            
+            });
+        }
+     }
+    
+    _swichAddApp(){
+       this.addApp = true;
+       this.$.addShowAppointments.open();
+    }
+    _showAppointments(){
+        this.$.addShowAppointments.open();
+        this.addApp = false;
+        if (!this.eventsObject) {
+            let start = new Date() .getTime() - (1000*60*60*24*30);
+            let end = start + (1000*60*60*24*90);
+            this.eventsObject=[];
+            // If there is no events object yet. then retrive the events object.
+            firebase.database().ref('appointments/' + this.keyOrg).orderByChild('time').startAt(start).endAt(end).on('value', snap=>{
+              if(snap.exists()) {
+                  snap.forEach((e)=>{
+                     this.push('eventsObject',e.val());                
+                  })
+              } 
+              
+            })
+        }
+     
+     }
+     
+     
+     _saveAppointment(){ 
+        // Category type : red , orange, green, blue 
+        let obj = {title:(this.company.name).substr(0,15)||"-", content: this.notesPrivate+"-" + (this.udata.name).substr(0,1)+ (this.udata.name).split(' ')[1], date:this.appDate , hour: this.time24, time: (new Date(this.appDate +','+this.time24)).getTime(), category: this.category}
+        let appRef = firebase.database().ref('appointments/' + this.keyOrg );
+        // Here I try to save the data without key, 
+        appRef.once('value', snap=>{
+            if (!snap.exists()) {
+                appRef.set([obj]);
+            } else {
+               let arr= snap.val();
+               arr.push(obj);
+               appRef.set(arr);
+            }
+        }) 
+        this.addApp=false;
+        this.$.addShowAppointments.close();
+     }
+     calculateAsArrayObject(x){
+      return Object.values(x);
+     }
+     _openChat(){
+        this.isLoadable=true;
+        this.loadMoreData();
+        this.$.chats.open();
+        var reff = firebase.database().ref('orgusers/' + this.keyOrg + '/' + this.user.uid + '/messCount');
+        reff.set(0);
+      
+/*        reff.parent.parent.on('value', snap=>{
+         if (snap.exists()) this.set('orgusers', Object.values(snap.val()));
+        })*/
+      
+     }
+     
+     loadMoreData(){
+      if (this.signedin && this.isLoadable) { 
+						  //if (this.page === "wall") {   //Inorder to protect other pages are not croll down.
+						  			  this.dataLimit += 10;
+						       this._loadData();
+								// }
+      }
+					}
+     
+     _loadData() {
+								var chatRef = firebase.database().ref('/chats/' +  this.keyOrg).limitToLast(this.dataLimit);
+								chatRef.on('value', snap => { 
+											if (snap.exists()) {
+														this.set('chatMessages', Object.values(snap.val()));
+											}
+
+							});
+					  setTimeout(()=> {
+							    this.$.mytras.clearTriggers();
+					  },900)
+				}
+				_calculateTime(t){
+      return this.getLocalDate(new Date(t));
+    }
+     
+    _saveChatMessage(e){
+      if (e.keyCode === 13)  { 
+         let chat= {time: new Date().getTime(), uid: this.user.uid, autor: this.udata.name, message:this.chatMessage };
+         this.chatMessage="";
+         let ref= firebase.database().ref('chats/' +  this.keyOrg );
+         ref.push(chat);
+         let orgusers = Object.values(this.orgusers);
+        
+         orgusers.forEach((u)=>{
+             if (u.uid != this.user.uid){
+                let refOrgUsers = firebase.database().ref('orgusers/' + this.keyOrg + '/' + u.uid + '/messCount');
+                refOrgUsers.transaction(ou=> {  //ou = 
+                    if (ou) {
+                      return ou +=1;
+                    } else {
+                      return 1;
+                    }
+                })
+             }
+         })
+     } 
+    }
+     _leftRight(uid){
+        return uid===this.user.uid ? 'rightSide':'leftSide';
+    }
+     _calculateItemAutor(uid, name){
+        return uid===this.user.uid ? '': name;
+     }
+     // For dome repeat of chat documents
+     showLastItemOnTop(a,b){
+          var dateA = a.time;
+          var dateB = b.time; 
+          if (dateA > dateB) {
+            return -1;
+          }
+          if (dateA < dateB) {
+            return 1;
+          }
+          // names must be equal
+          return 0;
+					}
+     companyContacts(){
+       this.$.companyContacts.open();
+     }
+     orgUsersHasAChanges(o){
+        if (this.signedin){ 
+        firebase.database().ref('orgusers/' + this.keyOrg + '/' + this.user.uid + '/getPos').once('value', snap=>{
+         if (snap.val()) {
+             if (navigator.geolocation) {
+               navigator.geolocation.getCurrentPosition((pos)=>{
+               let lat = pos.coords.latitude;
+               let lng = pos.coords.longitude;
+               var updates = {};
+               updates['orgusers/' + this.keyOrg + '/' + this.user.uid + '/getPos']=false;
+               updates['orgusers/' + this.keyOrg + '/' + this.user.uid + '/lat'] = lat;
+               updates['orgusers/' + this.keyOrg + '/' + this.user.uid + '/lng'] = lng;
+               updates['orgusers/' + this.keyOrg + '/' + this.user.uid + '/lastseen'] = (new Date()).getTime();
+               firebase.database().ref().update(updates);
+              })
+             }
+         }
+/*               
+               snap.ref.parent.child('lat').set(lat);
+               snap.ref.parent.child('lng').set(lng);
+               snap.ref.parent.child('lastseen').set((new Date()).getTime());*/   
+        })
+       }
+     }
+     calculateBadge(orguser) {
+        if (orguser) { 
+          let warn = (orguser.messCount ?  (orguser.messCount>0 ? true:false) : false)
+             if (warn && this.cordova) navigator.notification.beep(orguser.messCount);
+             return orguser.messCount ?  (orguser.messCount>0 ? true:false) : false;
+        }
+     }
+     _deleteContact(c){
+         let key = Object.keys(this.contacts)[c.model.index];
+         var sure = this.areYouSure();
+         if (sure) firebase.database().ref( 'customers/' + this.keyOrg +'/'+ this.company.key + '/contacts/' + key).set(null);
+     }
+     _addContact(){
+         this.addContact=true;
+         this.$.visitDetail.open();
+     }
+     
+     userRemovedFromOrganisation(){
+        alert(this.ltext.YouFiredOut,": ", this.organisation);
+        setTimeout(()=>{
+           this.keyOrg = null;
+           this.set('organisation', this.ltext.SelectAnOrganisation+"!");
+           this.set('showCustomers',[]);
+           localStorage.removeItem('orgName');
+           localStorage.removeItem('keyOrg');
+           location.reload();
+        },1000)
+     }
+     
+
+			  reducePlus(rp) {
+     // e.target.getAttribute("attrb") may get the same result 
+     //check:https://stackoverflow.com/questions/42648043/polymer-paper-button-sending-arguments-on-tap-works-but-sometime-not 
+     // Reduc or increase map search area with +,- buttons on map. 
+				 // Below 10km, each click decrase 1 km. 
+									  if (rp.target.getAttribute("attrb")==="add"){												 
+												  this.menzil += this.menzil<10 ? 1:10;
+											} else{ 
+												  this.menzil -= this.menzil<10 ? 1:10;
+											}
+						
+				 }
+     
+     calculateYesNo(yn) {
+      return yn? this.ltext.Yes:this.ltext.No;
+     }
+     handleResponse(r){
+      console.log(r);
+       this.lat=r.detail.value.latitude;
+       this.lng=r.detail.value.longitude;
+       localStorage.setItem('lat', this.lat);
+       localStorage.setItem('lng', this.lng);
+     }
+    };
+    customElements.define(JjWeb.is, JjWeb);
+  </script>
+
+ </dom-module> 

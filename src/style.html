@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<style>
+
+ html,
+ body {
+  font-family: 'Roboto', Arial, sans-serif;
+  height: 100%;
+  margin: 0;
+ }
+ 
+ visits-app[unresolved] {
+  display: block;
+  background-image: url('../images/customer.jpg')
+  min-height: 101vh;
+  line-height: 68px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: #202020;
+  padding: 0 16px;
+  overflow: visible;
+ }
+ 
+ #ui {
+     position: fixed;
+     top: 20%;
+     margin: 10px 10px;
+     width: 88%;
+     padding: 10px;
+     border: 3px solid blue;
+     display: none;
+     z-index: 2;
+ }
+</style>
+<script>
+ var importDoc = document.currentScript.ownerDocument;
+ var style = importDoc.querySelector('style');
+ document.head.appendChild(style);
+</script>

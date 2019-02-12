@@ -1,0 +1,282 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-avatar/paper-avatar.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="./jj-ltext.html">
+
+<dom-module id="jj-drawer">
+  <template>
+    <style  include="iron-flex iron-flex-alignment">
+         :host {
+         position: relative;
+          background-color: #d8d7f0;
+          overflow: auto;
+          margin-top: 60px;
+          background-repeat: no-repeat;
+          min-height: 780px;
+          transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: -webkit-box;
+          display: -moz-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          @apply(--layout-vertical);
+
+
+      }
+      .flex-center-justified {
+          @apply --layout-horizontal;
+          @apply --layout-center-justified;
+      }
+      .flex {
+       @apply --layout-horizontal;
+      }
+      a{
+      text-decoration: none;
+      color: blueviolet;
+      }
+      iron-icon{
+         color:blueviolet;
+      }
+
+
+      paper-icon-item.onair {
+         margin-top: 15px;
+         cursor: pointer;
+      }
+      .drawer-contents {
+      position: relative;
+      top: -160px;
+      width: 255px;
+      }
+
+      #headLine {
+      position: relative;
+      left: 3px;
+      z-index: 10;
+      top:10px;
+      }
+      paper-avatar.x-large {
+       --paper-avatar-width: 90px;
+      }
+
+      paper-item-body {
+         color: white;
+      }
+
+      paper-dialog paper-dialog-scrollable {
+      --paper-dialog-scrollable: {
+        box-sizing: border-box;
+        width: 400px;
+        height: 390px;
+      }
+      }
+
+      paper-dialog.terms {
+         width: 95%;
+      }
+
+      paper-radio-group {
+
+      }
+      .small {
+         font-size: 12px;
+      }
+      span {
+         margin-right: 5px;
+
+      }
+      hr { margin: auto}
+
+      #close {
+         position: relative;
+         left: 210px;
+         color: blueviolet;
+      }
+    </style>				
+    <div id="headLine"> 
+							<paper-icon-item >
+											<paper-avatar class="x-large" label="{{user.displayName}}" src="{{user.photoURL}}" two-chars ></paper-avatar>              
+							</paper-icon-item>
+							<br /><br /><br />
+						<div class="flex-center-justified" style="color:white;">{{user.displayName}}</div>
+    </div>      
+            
+    <div class="drawer-contents" style="height: 100%; overflow: scroll;">
+     <img src$='[[importPath]]../images/7.jpg' style="width: 255">
+     
+      <paper-icon-item class="onair" on-tap ="dropdownDialogToggle" role="option" tabindex="0" >
+        <iron-icon icon="language" item-icon="" slot="item-icon"></iron-icon>
+        <span class="small">[[ltext.Language]]</span>
+        <div class="small"> ([[ltext.SelectedLanguage]])</div>
+      </paper-icon-item>
+
+      <a href="/signup"> 
+      <paper-icon-item class="onair" role="option" tabindex="-1" aria-disabled="false">
+        <iron-icon icon="settings" item-icon="" slot="item-icon"></iron-icon>
+        <span class="small">[[ltext.Settings]]</span>
+       </paper-icon-item></a>
+      <a href="https://visitsapp.com/?lang=ru#features" target="_blank"> 
+      <paper-icon-item class="onair" role="option" tabindex="0" aria-disabled="false">
+        <iron-icon icon="help" item-icon="" slot="item-icon"></iron-icon>
+        <span class="small">[[ltext.Help]]</span>
+      </paper-icon-item>
+      </a>
+       <a href="/privacy"> 
+       <paper-icon-item class="onair termsCond" role="option" tabindex="-1" aria-disabled="false">
+        <iron-icon icon="description" item-icon="" slot="item-icon" ></iron-icon>
+        <span class="small">[[ltext.TermsAndConditions]]</span>
+      </paper-icon-item></a>
+      
+      <hr>
+      <div class="flex-center-justified small" style="font-style: bold;">Version 0.01.001</div>
+					<a href="https://www.polymer-project.org/" target="_blank"><div class="flex-center-justified " style="font-style: bold;">Polymer#^2.0.0</div></a>
+      <a href="https://firebase.google.com/" target="_blank"><div class="flex-center-justified " style="font-style: bold;">Firebase </div></a>
+      <br />     <br />     <br />     <br /><br />     <br />     <br />     <br /><br />     <br />     <br />     <br />
+    </div>
+  
+  <paper-dialog id="dropdownDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" autofocus vertical-offset=0 tabindex=-1>
+  <h2>{{ltext.SelectLanguage}}</h2>
+  <paper-dialog-scrollable id="myScroll">
+   
+    <paper-radio-group selected="{{navLang}}" attr-for-selected="value" autofocus on-selected-items-changed="closeDropdownDialog">
+        <paper-radio-button value="az" name="Azərbaycanca">Azərbaycanca</paper-radio-button>
+        <paper-radio-button value="id" name="Bahasa Indonesia">Bahasa Indonesia</paper-radio-button>
+        <paper-radio-button value="ms" name="Bahasa Melayu">Bahasa Melayu</paper-radio-button>
+        <paper-radio-button value="ca" name="Català">Català</paper-radio-button>
+        <paper-radio-button value="cs" name="Česky">Česky</paper-radio-button>
+        <paper-radio-button value="da" name="Dansk">Dansk</paper-radio-button>
+        <paper-radio-button value="de" name="Deutsch">Deutsch</paper-radio-button>
+        <paper-radio-button value="et" name="Eesti">Eesti</paper-radio-button>
+        <paper-radio-button value="en" name="English">English</paper-radio-button>
+        <paper-radio-button value="es" name="Español">Español</paper-radio-button>
+        <paper-radio-button value="fr" name="Français">Français</paper-radio-button>
+        <paper-radio-button value="hr" name="Hrvatski">Hrvatski</paper-radio-button>
+        <paper-radio-button value="it" name="Italiano">Italiano</paper-radio-button>
+        <paper-radio-button value="sw" name="Kiswahili">Kiswahili</paper-radio-button>
+        <paper-radio-button value="lv" name="Latviešu">Latviešu</paper-radio-button>
+        <paper-radio-button value="lt" name="Lietuviškai">Lietuviškai</paper-radio-button>
+        <paper-radio-button value="hu" name="Magyar">Magyar</paper-radio-button>
+        <paper-radio-button value="nl" name="Nederlands">Nederlands</paper-radio-button>
+        <paper-radio-button value="nb" name="Norsk">Norsk</paper-radio-button>
+        <paper-radio-button value="uz" name="Oʻzbekcha">Oʻzbekcha</paper-radio-button>
+        <paper-radio-button value="fil" name="Pilipino">Pilipino</paper-radio-button>
+        <paper-radio-button value="pl" name="Polski">Polski</paper-radio-button>
+        <paper-radio-button value="pt_br" name="Português (BR)">Português (BR)</paper-radio-button>
+        <paper-radio-button value="pt_pt" name="Português (PT)">Português (PT)</paper-radio-button>
+        <paper-radio-button value="ro" name="Română">Română</paper-radio-button>
+        <paper-radio-button value="sq" name="Shqip">Shqip</paper-radio-button>
+        <paper-radio-button value="sk" name="Slovenčina">Slovenčina</paper-radio-button>
+        <paper-radio-button value="sl" name="Slovenščina">Slovenščina</paper-radio-button>
+        <paper-radio-button value="fi" name="Suomi">Suomi</paper-radio-button>
+        <paper-radio-button value="sv" name="Svensk">Svensk</paper-radio-button>
+        <paper-radio-button value="vi" name="Tiếng Việt">Tiếng Việt</paper-radio-button>
+        <paper-radio-button value="tr" name="Türkçe">Türkçe</paper-radio-button>
+        <paper-radio-button value="el" name="Ελληνικά">Ελληνικά</paper-radio-button>
+        <paper-radio-button value="bg" name="Български">Български</paper-radio-button>
+        <paper-radio-button value="kk" name="Қазақша">Қазақша</paper-radio-button>
+        <paper-radio-button value="mk" name="Македонски">Македонски</paper-radio-button>
+        <paper-radio-button value="ru" name="Pусский">Pусский</paper-radio-button>
+        <paper-radio-button value="sr" name="Српски">Српски</paper-radio-button>
+        <paper-radio-button value="uk" name="Українська">Українська</paper-radio-button>
+        <paper-radio-button value="he" name="‏עברית‏">‏עברית‏</paper-radio-button>
+        <paper-radio-button value="ar" name="العربية">العربية</paper-radio-button>
+        <paper-radio-button value="fa" name="فارسی">فارسی</paper-radio-button>
+        <paper-radio-button value="ur" name="اردو">اردو</paper-radio-button>
+        <paper-radio-button value="bn" name="বাংলা">বাংলা</paper-radio-button>
+        <paper-radio-button value="hi" name="हिंदी">हिंदी</paper-radio-button>
+        <paper-radio-button value="gu" name="ગુજરાતી">ગુજરાતી</paper-radio-button>
+        <paper-radio-button value="kn" name="ಕನ್ನಡ">ಕನ್ನಡ</paper-radio-button>
+        <paper-radio-button value="mr" name="मराठी">मराठी</paper-radio-button>
+        <paper-radio-button value="ta" name="தமிழ்">தமிழ்</paper-radio-button>
+        <paper-radio-button value="te" name="తెలుగు">తెలుగు</paper-radio-button>
+        <paper-radio-button value="ml" name="മലയാളം">മലയാളം</paper-radio-button>
+        <paper-radio-button value="th" name="ภาษาไทย">ภาษาไทย</paper-radio-button>
+        <paper-radio-button value="zh_cn" name="简体中文">简体中文</paper-radio-button>
+        <paper-radio-button value="zh_tw" name="繁體中文">繁體中文</paper-radio-button>
+        <paper-radio-button value="ja" name="日本語">日本語</paper-radio-button>
+        <paper-radio-button value="ko" name="한국어">한국어</paper-radio-button>
+      </paper-radio-group>
+        
+      </paper-dialog-scrollable>
+      <paper-button dialog-confirm autofocus>[[ltext.Exit]]</paper-button> 
+</paper-dialog> 
+
+  <br/><br/><br/>
+  </template>
+  <script>
+    class JjDrawer extends Polymer.Element { 
+        static get is() { return 'jj-drawer'; }
+        static get properties() { return {   
+            
+        user: {
+            type: Object,
+            notify:true,
+            
+        },
+        ltext:{
+            type: Object,
+            notify:true
+        },
+        udata: {
+            type:Object,
+            notify:true
+        },
+								page:{
+									   type:String,
+									   reflectToAttribute:true
+								},
+        signupOrInfo:{
+            type:String,
+            computed:'getValueOfsignupOrInfo(signedin)'
+        },
+        navLang:{
+            type:String,
+            notify:true
+        }
+
+        }}
+        
+        static get observers() { return ['udataLangControl(udata.lang)']}
+            
+       checkLanguage(l) {
+          //console.log(l);
+           
+       }
+
+    
+       udataLangControl(e) {
+           // if user has own language. Than set selected lang is user own language. 
+           if (e){  //console.log(e); 
+																		this.navLang=e;  }
+       }
+     
+       dropdownDialogToggle() {
+            this.$.dropdownDialog.toggle(); 
+       }
+       closeDropdownDialog(l){
+            this.$.dropdownDialog.close(); 
+            setTimeout(()=>{
+                
+                this.set('udata.lang', this.navLang); // to set user language to selected language
+            },900)
+       }
+
+     getValueOfsignupOrInfo(si){
+          return si ? "signup":"signup"
+     }
+       
+    }
+    customElements.define(JjDrawer.is, JjDrawer);
+  </script>
+  
+</dom-module>
+
+

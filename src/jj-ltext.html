@@ -1,0 +1,47 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+ 
+
+<dom-module id="jj-ltext">
+  <template>
+    <style  include="iron-flex iron-flex-alignment">
+      :host {
+
+          
+        }
+ 
+    </style>
+    
+    <iron-ajax 
+            auto
+            id="ltextAjax"
+            url = "./src/language/[[navLang]].json" 
+            handle-as="json" 
+            last-response="{{ltext}}" >
+    </iron-ajax>
+  </template>
+  <script>
+    class JjLtext extends Polymer.Element { 
+        static get is() { return 'jj-ltext'; }
+        static get properties() { return {   
+        navLang : {
+            type:String,
+									   notify:true 
+        },
+        ltext:{
+            type:Object,
+            notify:true
+
+        }
+  
+        }}
+        
+       static get observers() { return []}
+
+    }
+    customElements.define(JjLtext.is, JjLtext);
+  </script>
+
+</dom-module>
+
+

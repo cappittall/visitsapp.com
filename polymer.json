@@ -1,0 +1,57 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/visit-app.html",
+  "fragments": [
+    "src/lazy-resources.html"
+  ],
+  "sourceGlobs": [
+   "src/**/*",
+   "images/**/*",
+   "bower.json"
+  ],
+  "includeDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+  ]
+}
+
+
+{
+  "entrypoint": "index.html",
+  "shell": "src/visits-app.html",
+  "fragments": [
+    "src/jj-drawer.html",
+    "src/jj-home.html",
+    "src/jj-ltext.html",
+    "src/jj-privacy.html",
+    "src/jj-reports.html",
+    "src/jj-search.html",
+    "src/jj-signup.html",
+    "src/jj-warning.html",
+    "src/jj-web.html",
+    "src/shared-styles.html",
+    "src/lazy-resources.html"
+  ],
+  "sources": [
+    "src/**/*",
+    "images/**/*"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/*"
+  ],
+  "lint": {
+    "rules": ["polymer-2-hybrid"]
+  },
+  "builds": [
+    {
+      "preset": "es5-bundled"
+    },
+    {
+      "preset": "es6-unbundled"
+    },
+    {
+      "preset": "es6-bundled"
+    }
+  ]
+}

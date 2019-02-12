@@ -1,0 +1,19 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": "auth != null",
+    "meetings": {
+      "$keyOrg":{
+       ".indexOn":["filter","name","start"]
+      }
+    },
+    "organisation": {
+      ".indexOn": ["organisationName"]
+    },
+    "appointments": {
+      "$keyOrg": {
+         ".indexOn":["time"]
+      }
+   }
+  }
+}

@@ -1,0 +1,550 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--> 
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-avatar/paper-avatar.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="./jj-web.html">
+<link rel="import" href="./jj-ltext.html">
+<link rel="import" href="./jj-privacy.html">
+<link rel="import" href="./jj-analytics.html">
+<link rel="import" href="./jj-warning.html">
+  
+<dom-module id="visits-app"> 
+<!--     <link rel="lazy-import" group="lazy" href="lazy-resources.html">-->
+<template>
+  <style include="iron-flex iron-flex-alignment">
+						host: {
+								display: block;
+								position: relative;
+								padding-top: 30px;
+								padding-bottom: 34px;
+								min-height: 100vh
+								--app-primary-color: var(--paper-green-500);
+								--app-secondary-color:var(--paper-green-300);
+								--app-accent-color: var(--paper-green-900);
+								--paper-button-ink-color: var(--app-accent-color);
+								--paper-icon-button-ink-color: var(--app-accent-color);
+								--paper-spinner-color: var(--app-accent-color);
+								-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+								color: var(--app-primary-color);
+       
+								background-image: url('../images/beachv1.jpg');
+							 background-repeat: no-repeat;
+							 background-size: 100% 140vh;
+							
+								transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        @apply(--layout-vertical); 
+        @apply(--layout-center);
+			}
+				
+   app-header#header { 
+     @apply(--layout-fixed-top);
+     background-color: #673AB7;
+     z-index: 4;
+   }
+   
+			app-drawer {
+								z-index: 3;
+						}
+   
+   iron-pages{
+										display:block;
+										position: relative;
+			}
+   
+   paper-progress.green {
+								width: 100%;
+						--paper-progress-active-color: var(--paper-light-blue-500);
+						--paper-progress-secondary-color: var(--paper-light-blue-100);
+			}
+   
+   .flexchild {
+         @apply --layout-flex;
+      }
+   iron-icon#userButton { 
+         color: white;
+         width: 40px;
+         height: 50px;
+
+   }
+   
+   a {
+       text-decoration: none;
+       
+   }
+   
+   app-toolbar, paper-item {
+      
+       padding: 0 2px;
+   }
+   
+   paper-item {
+       cursor: pointer;
+   }
+   paper-avatar {
+       cursor: pointer;
+       color: white;
+   }
+   paper-dialog#userMenu {
+
+    position: absolute;
+    right: 1px;
+    top: 30px;
+    box-sizing: border-box;
+    margin: 20px 10px;
+       
+   }
+   .secondary {
+    font-size: 10px;
+    color: darkviolet;
+    
+   }
+   .large {
+     width: 60px;
+     height: 60px;
+     margin-right: 10px;
+   }
+
+</style>
+
+
+<!--Initiliaze header and menu-->
+<app-header  id="header" role="navigator" scroll-target="scrollingRegion" elevation="2">
+  <app-toolbar spacer >
+    <paper-icon-button icon="menu" id="drawer" style="color:white;" on-tap="toggleDrawer" ></paper-icon-button>
+    <a href="/web"> 
+    <paper-button><div main-title style="color:white;">Visitss <span  style="color:red;font-weight: 900; margin:0 2px; font-size: 18px;">'</span>App</div></paper-button></a>
+    <span class="flex"></span>
+    <paper-item-body>
+    <div><a href="/signup"><span style="color: white">[[organisation]]&nbsp;</span></a></div>
+    <div secondary style="color:white; font-size: 10px;">([[user.displayName]])</div>
+    </paper-item-body>
+    <paper-avatar id="userButton" label="Xavier" src$="{{user.photoURL}}" on-tap="toggleUserMenu" jdenticon></paper-avatar>
+  </app-toolbar> 
+  <paper-progress  indeterminate class="green" disabled="{{progresDisabled}}"></paper-progress>
+</app-header>
+
+<paper-dialog id="userMenu">
+   <paper-listbox>
+   
+     <div class="layout horizontal center start-justified team" >
+ 
+        <paper-item>  
+            <paper-avatar class="large" label="[[user.displayName]]" src$="{{user.photoURL}}" two-chars ></paper-avatar> 
+
+            <paper-item-body two-line>
+                  <div>[[user.displayName]]</div>
+                  <div secondary class="secondary">[[user.email]]</div>
+            </paper-item-body>
+        </paper-item>
+
+     </div>
+     <hr/>
+      <paper-item on-tap ="pageSignIn"><iron-icon icon="settings"></iron-icon>&nbsp; [[calculateMenu1(signedin)]]</paper-item>
+<!--       <paper-item on-tap =""><iron-icon icon="communication:business"></iron-icon>&nbsp; [[ltext.a]]Test</paper-item>-->
+       <template is="dom-if" if="{{signedin}}"> 
+         <paper-item on-tap="_signOut"><iron-icon icon="exit-to-app" ></iron-icon>&nbsp; [[ltext.Signout]]</paper-item>
+       </template>
+
+   </paper-listbox>
+</paper-dialog>
+ <app-drawer id="drawer" opened="{{drawerOpened}}" swipe-open  tabindex="0" page="[[page]]">
+ 
+        <jj-drawer
+        	   signedin="{{signedin}}"
+            user="{{user}}"
+            ltext="{{ltext}}"
+            udata="{{udata}}"
+            nav-lang="{{navLang}}"
+        ></jj-drawer>
+
+  
+</app-drawer>
+
+<jj-analytics key="UA-119175896-1"></jj-analytics>
+
+<jj-ltext id="lanText" ltext={{ltext}} udata="{{udata}}" nav-lang="{{navLang}}"></jj-ltext>
+
+<jj-warning id="warning" ltext="{{ltext}}"></jj-warning>
+<!--
+Check user screen size 
+-->
+<iron-media-query query="max-width: 600px" query-matches="{{smallScreen}}"></iron-media-query>
+
+<!--
+  app-location and app-route elements provide the state of the URL for the app.
+-->
+   <app-location route="{{route}}"></app-location>
+   
+   <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+                                        
+
+ 
+<!--  -->
+<iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="web" >  
+  
+ <jj-home name="home"
+          ltext="{{ltext}}"
+          lat="{{lat}}"
+          lng="{{lng}}"
+          api-key="[[apiKey]]"
+          signedin="[[signedin]]"
+          cordova="[[cordova]]"
+          small-screen="{{smallScreen}}"></jj-home>
+<jj-web name="web"
+ 	        key-org="{{keyOrg}}"
+ 	        orguser="{{orguser}}"
+ 	        orgusers="{{orgusers}}"  
+ 	        customers="{{customers}}"       
+          udata="{{udata}}"
+          user="{{user}}"
+          organisation="{{organisation}}"
+          ltext="{{ltext}}"
+          lat="{{lat}}"
+          lng="{{lng}}"
+          api-key="[[apiKey]]"
+          signedin="[[signedin]]"
+          cordova="[[cordova]]"
+          small-screen="{{smallScreen}}"></jj-web>
+<jj-search name="search"
+ 	        key-org="{{keyOrg}}"
+ 	        customers="{{customers}}"       
+          udata="{{udata}}"
+          user="{{user}}"
+          organisation="{{organisation}}"
+          ltext="{{ltext}}"
+          lat="{{lat}}"
+          lng="{{lng}}"
+          api-key="[[apiKey]]"
+          signedin="[[signedin]]"
+          cordova="[[cordova]]"
+          small-screen="{{smallScreen}}"></jj-search>
+<jj-reports name="reports"
+          customers="{{customers}}"   
+ 	        key-org="{{keyOrg}}"  
+          udata="{{udata}}"
+          user="{{user}}"
+          organisation="{{organisation}}"
+          ltext="{{ltext}}"
+          lat="{{lat}}"
+          lng="{{lng}}"
+          api-key="[[apiKey]]"
+          signedin="[[signedin]]"
+          cordova="[[cordova]]"
+          small-screen="{{smallScreen}}"></jj-reports>          
+	<jj-signup
+	         name="signup"
+	         id="signup"
+	         orguser="{{orguser}}" 
+	         orgusers="{{orgusers}}"         
+	         deviceready="[[deviceready]]"
+	         key-org="{{keyOrg}}"        
+	         udata="{{udata}}"	         
+	         organisation="{{organisation}}"
+          ltext="{{ltext}}"
+          signedin="{{signedin}}"
+          nav-lang="{{navLang}}"
+          cordova="[[cordova]]"
+          device="[[device]]"          
+          user="{{user}}"></jj-signup>
+          
+<jj-privacy 
+          name="privacy" id="privacy" page="{{page}}"></jj-privacy>
+</iron-pages>
+
+</template>
+
+  <script>
+    class VisitsApp extends Polymer.Element { 
+        
+        static get is() { return "visits-app"; } 
+        static get properties() { return {
+							     apiKey:{
+                type:String,
+                value() {return 'AIzaSyBXGDs2cEvB1GbDfDVhxtA5nGvvpIFjKAM'}
+            },
+												page:{
+													    type:String,
+													    reflectToAttribute:true,
+													    observer: '_pageChanged'
+												},
+									   count:{
+													    type:Number,
+													    value:9999
+												},
+            opened:{
+                 type:Boolean,
+                 value:false
+            },
+            deviceready:{
+                 type:Boolean,
+                 value:false
+            },
+            navLang:{
+                 type:String,
+                 value() { return (navigator.language || navigator.userLanguage).split('-')[0]; }
+            }
+  
+     }}; 
+        
+     static get observers() {
+        return ['_routePageChanged(routeData.page)',
+																'udataChanged(udata.*)',
+                'checkSignedIn(signedin)'
+														
+               ]
+       }
+					
+    constructor() {
+        super();
+        window.performance && performance.mark && performance.mark('jobijoy-app.created');
+      }
+
+      ready() {
+        super.ready();
+
+        // Custom elements polyfill safe way to indicate an element has been upgraded.
+        this.removeAttribute('unresolved');
+
+        Polymer.RenderStatus.afterNextRender(this, () => {
+            this.device = this.getMobileOperatingSystem();
+            this.cordova = document.URL.indexOf( 'https://' ) === -1 && document.URL.indexOf( 'http://localhost' ) === -1;
+         			var arr = ["ar",	"bg",	"ca",	"zh_cn",	"zh_tw",	"hr",	"cs",	"da",	"nl",	"en",	"en_gb",	"fa",	"fil",	"fi",	"fr",	"de",	"el",	"iw",	"hi",	"hu",	"id",	"it",	"ja",	"ko",	"lv",	"lt",	"no",	"pl",	"pt",	"pt_pt",	"ro",	"ru",	"sr",	"sk",	"sl",	"es",	"es_419",	"sv",	"th",	"tr",	"uk",	"vi"]
+          
+            var lan = this.navLang.substring(0,2);
+            if (arr.indexOf(lan)==-1) {lan="en";} else if (lan=="zh") { lan="zh_cn"; }
+            var scrp = document.createElement('script');
+            scrp.src = 'https://www.gstatic.com/firebasejs/ui/3.2.0/firebase-ui-auth__' + lan + '.js';
+            document.head.appendChild(scrp);
+         
+            console.log(document.URL, 'cordova ', this.cordova);
+          
+            window.addEventListener('online', (e)=>this._notifyNetworkStatus(e));
+            window.addEventListener('offline', (e)=>this._notifyNetworkStatus(e));
+
+            window.addEventListener("deviceready", (x)=>{ 
+                this.set('deviceready', true);
+            });
+
+        });
+      }
+
+     disconnectedCallback(){
+           super.disconnectedCallback();
+           window.removeEventListener('deviceready', (x)=>{ 
+           })
+     }
+   
+    calculateIcon(s){
+        return s? "":"account-circle"
+    }
+				udataChanged(u)	{
+					   if (u.path.length > 6 && this.signedin) {
+									    var db = firebase.database();
+									    var reff = db.ref('users/' + this.user.uid  +  '/' + ((u.path).split('.')[1]));
+									    reff.set(u.value);
+									    // this.$.info.udataChanged();
+								} 					   
+				}
+					
+    checkSignedIn(s, l ){
+        if (s) {
+            var org  = localStorage.getItem('orgName');
+            if (org) {
+                 this.organisation = org;
+            } else {
+                 this.organisation = this.ltext.SelectAnOrganisation+"!";
+            } 
+        }
+    }
+				
+			 _routePageChanged(page) {      
+       	this.page = page || 'web';
+				   	// Close the drawer - in case the *route* change came from a link in the drawer.
+        this.drawerOpened = false;
+   
+    }
+				
+				_pageChanged(page, oldPage) {
+        // Return old scroll point when the page=="wall".   
+        if (page != null) {
+          if (page == 'home') {
+            this._pageLoaded(Boolean(oldPage));
+          // other routes are lazy loaded
+          } else if (oldPage==undefined) {
+            // When a load failed, it triggered a 404 which means we need to
+            // eagerly load the 404 page definition
+		          this._pageLoaded(Boolean(oldPage));
+            let cb = this._pageLoaded.bind(this, !Boolean(oldPage));
+            Polymer.importHref(
+              this.resolveUrl('jj-' + page + '.html'),
+              cb, cb, true);
+          } else {
+            let cb = this._pageLoaded.bind(this, Boolean(oldPage));
+            Polymer.importHref(this.resolveUrl('jj-' + page + '.html'),
+            cb, cb, true);
+										}
+        }
+       if (page=="privacy") {
+									    this.$.privacy.openTerms();
+       }       
+      }
+				
+						_pageLoaded(shouldResetLayout) {
+        if (!shouldResetLayout) { 
+										this._ensureLazyLoaded();
+          // The size of the header depends on the page (e.g. on some pages the tabs
+          // do not appear), so reset the header's layout only when switching pages.
+          Polymer.Async.timeOut.run(() => {    
+            this.$.header.resetLayout();
+          }, 1);
+        }
+      }
+
+    //Right drawer opne/close   
+    toggleDrawer() {
+        //this.$.drawer.toggle();
+        // Instead with toggle() function, opne/close drawer with drawerOpened binding variable.
+        this.drawerOpened = !this.drawerOpened;
+    }
+    _ensureLazyLoaded() {
+        // load lazy resources after render and set `loadComplete` when done.
+        if (!this.lazyLoad) {
+          
+          Polymer.RenderStatus.afterNextRender(this, () => {		 
+
+            Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
+              console.log('Lazyloading completed...');
+              this.checkUserStatus();
+													 this.lazyLoad=true;
+              // Check network status
+              this._notifyNetworkStatus();
+            }, ()=>{console.warn('Can t loading')}, true);
+          });
+        }
+      }
+
+
+    
+    findMyPlace() {
+        this.$.jjmaps.updateCurrentPosition();
+    }
+        
+    checkUserStatus(){	
+								firebase.auth().onAuthStateChanged((user)=> {
+          if (user) {
+             console.log("signed in...", user );
+             this.progresDisabled=true;
+											  this.set('user', user);
+											  this.set('signedin',true);
+											  firebase.database().ref('users/' + user.uid).on('value', (snapshot) => {
+															this.set('udata', snapshot.val());
+               if (!this.udata) {                
+                  var updates={};
+                   updates['users/' + user.uid + '/name'] = user.displayName;
+                   updates['users/' + user.uid + '/email'] = user.email;
+                   updates['users/' + user.uid + '/photo'] = user.photoURL;
+                   updates['users/' + user.uid + '/lang'] = this.navLang;
+                   updates['users/' + user.uid + '/lastLogged'] = (new Date()).getTime();
+                  firebase.database().ref().update(updates);
+               } 
+               
+													});
+            
+											  
+          } else {
+            // User is signed out.
+             console.log("signed out..");
+											  this.set('signedin',false);
+          }
+        });
+					}
+        	    // to find out users device     
+    getMobileOperatingSystem() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+              // Windows Phone must come first because its UA also contains "Android"
+            if (/windows phone/i.test(userAgent)) { return "Windows Phone"; }
+            if (/android/i.test(userAgent)) {return "Android";}
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {return "iOS";}
+            return "unknown";
+    }
+     
+			_notifyNetworkStatus() {
+        let oldOffline = this.offline;
+        this.offline =  !navigator.onLine;
+        // Show the snackbar if the user is offline when starting a new session
+        // or if the network status changed.
+        if (this.offline || (!this.offline && oldOffline === true)) {
+          if (!this._networkSnackbar) {
+            this._networkSnackbar = document.createElement('jj-snackbar');
+            this.root.appendChild(this._networkSnackbar);
+          }
+          this._networkSnackbar.innerHTML = this.offline ? 'You are offline' : 'You are online';
+          this._networkSnackbar.open();
+        }
+      }		
+    toggleUserMenu() {
+         this.$.userMenu.open();
+    }
+    
+    pageSignIn() {
+         this.$.userMenu.close();
+         this.set('route.path', '/signup')
+    }
+   
+   _signOut(){
+         this.toggleUserMenu();
+         this.$.signup.__signOut()
+     }
+     
+    calculateMenu1(s){
+       return s? this.ltext.Settings:this.ltext.SignUpOrSignIn 
+   
+    }
+     
+}
+      
+customElements.define(VisitsApp.is, VisitsApp);
+</script> 
+
+</dom-module>

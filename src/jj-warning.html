@@ -1,0 +1,98 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<!--<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">-->
+
+<dom-module id="jj-warning">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        position: absolute;
+        top:10px;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: -webkit-box;
+          display: -moz-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          @apply(--layout-vertical);
+          @apply(--layout-center);
+        }
+     paper-toast {
+            --paper-toast-background-color:#130a2a;
+            --paper-toast-color: white;
+            text-align: center;
+            align-content: center;
+						      width: 100%;
+            z-index: 99999; 
+    }
+</style> 
+    
+    
+    <paper-toast id="organisationExists" text="[[ltext.OrganisationExists]]"></paper-toast> 
+    <paper-toast id="selectAnOrganisation" text="[[ltext.SelectAnOrganisation]]"></paper-toast> 
+    <paper-toast id="thisCustomerHasMoreThanOneMeeting" text="[[ltext.ThisCustomerHasMoreThanOneMeeting]]"></paper-toast> 
+    <!--jobijoy-app ten -->
+   
+    <paper-toast id="toast01" text="[[ltext.Toast01]]"></paper-toast>
+    <paper-toast id="toast02" text="[[ltext.Wait]]"></paper-toast>
+
+
+    <!--map ten -->
+    <paper-toast id="toast03" text="{{ltext.UserIsBusy}}"></paper-toast>
+
+    <!--bcards tan -->
+    <paper-toast id="success"  text="{{ltext.Success}}"> </paper-toast> 
+
+    <paper-toast id="uHaveSentYourCard" text="{{ltext.UHaveSentYourCard}}"></paper-toast>
+
+    <!--selected user info dan -->
+
+    <paper-toast id="signUpOrSignIn"  text="{{ltext.SignUpOrSignInWarning}}"></paper-toast>
+
+    <paper-toast id="addedAlready" text="{{ltext.AddedAlready}}"></paper-toast>
+    <paper-toast id="cardSended" text="{{ltext.CardSended}}"></paper-toast>
+       
+    <paper-toast id="singInWithGoogle" duration="0" text="{{ltext.SignInWithGoogle}}"><paper-button attrn="singInWithGoogle" on-tap="thistoggle" >{{ltext.Close}}</paper-button></paper-toast>
+   
+    
+</template>
+
+<script>
+  
+   class JjWarning extends Polymer.Element { 
+        static get is() { return 'jj-warning'; }
+        static get properties() { return {   
+        ltext:{
+            type: Object,
+            notify:true
+        }
+        }}
+        
+    toggleToast(toastid){
+        var toast = this.shadowRoot.querySelector(toastid);
+        toast.toggle();
+    }
+    thistoggle(id){
+        var toastid ="#"+this.getAttr(id,'attrn')
+        var toast = this.shadowRoot.querySelector(toastid);
+        toast.toggle();
+    }
+               
+    getAttr (e,attr) {
+            var elem = e.target;
+            while (elem.parentNode != undefined) {
+                if (elem.getAttribute(attr) != undefined) {
+                    // console.log(elem.getAttribute(attr), elem.parentNode);
+                    return elem.getAttribute(attr);
+                }
+                elem = elem.parentNode;
+            }
+    }
+        
+    };
+    customElements.define(JjWarning.is, JjWarning);
+ </script>
+      
+</dom-module>

@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "jobijoy-c88b9",
+    "staging": "visitapp-7ac36",
+    "visitapp": "visitapp-7ac36"
+  }
+}

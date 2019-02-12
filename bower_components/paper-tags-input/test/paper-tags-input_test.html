@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>paper-tags-input test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../paper-tags-input.html">
+  </head>
+  <body>
+
+    <test-fixture id="BasicTestFixture">
+      <template>
+        <paper-tags-input></paper-tags-input>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="ChangedPropertyTestFixture">
+      <template>
+        <paper-tags-input tags='["abc", "def"]'></paper-tags-input>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('paper-tags-input', function() {
+
+        test('instantiating the element with default properties works', function() {
+          var element = fixture('BasicTestFixture');
+          assert.equal(element.tags, []);
+          var elementShadowRoot = element.shadowRoot;;
+        });
+
+        test('setting a property on the element works', function() {
+          var element = fixture('ChangedPropertyTestFixture');
+          assert.equal(element.tags, ['abc', 'def']);
+          var elementShadowRoot = element.shadowRoot;
+          var chips = elementShadowRoot.querySelector('paper-chip');
+          assert.equal(chips.length, 2);
+        });
+
+        test('adding a tag works', function() {
+          var element = fixture('BasicTestFixture');
+          element.add('abc');
+          var elementShadowRoot = element.shadowRoot;
+          var chips = elementShadowRoot.querySelector('paper-chip');
+          assert.equal(chips.length, 1);
+        });
+
+        test('removing a tag works', function() {
+          var element = fixture('ChangedPropertyTestFixture');
+          element.remove('def');
+          var elementShadowRoot = element.shadowRoot;
+          var chips = elementShadowRoot.querySelector('paper-chip');
+          assert.equal(chips.length, 1);
+        });
+
+        test('adding a tag twice does nothing', function() {
+          var element = fixture('BasicTestFixture');
+          element.add('abc');
+          element.add('abc');
+          var elementShadowRoot = element.shadowRoot;
+          var chips = elementShadowRoot.querySelector('paper-chip');
+          assert.equal(chips.length, 1);
+        });
+
+        test('removing a non-existeny tag does nothing', function() {
+          var element = fixture('ChangedPropertyTestFixture');
+          element.remove('ghi');
+          var elementShadowRoot = element.shadowRoot;
+          var chips = elementShadowRoot.querySelector('paper-chip');
+          assert.equal(chips.length, 2);
+        });
+
+      });
+    </script>
+
+  </body>
+</html>

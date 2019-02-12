@@ -1,0 +1,92 @@
+ <link rel="import" href="../bower_components/polymer/polymer.html">
+ <link rel="import" href="../bower_components/paper-item/paper-item.html">
+ <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+ <link rel="import" href="jj-warning.html">
+ <dom-module id="jj-home">
+  <template>
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        position: relative;		
+        padding-top: 60px;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          display: -webkit-box;
+          display: -moz-box;
+          display: -ms-flexbox;
+          display: -webkit-flex;
+          display: flex;
+          @apply(--layout-vertical);
+          @apply(--layout-center);
+        }
+
+      :host([signed-in]) {
+        opacity: 0;
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        
+      }
+			  img {
+									@apply --layout-fit;
+									width: 100%;
+									height: 100vh;
+									margin: 0 auto;
+									opacity: 1;
+									transition: opacity 0.5s ease;
+      }
+     paper-button.indigo {
+         background-color: var(--paper-indigo-500);
+         color: white;
+         z-index: 5;
+         
+     }
+     a {
+         text-decoration: none;
+     }
+     paper-item.stores {
+									position: fixed;
+         bottom: 10px;
+					}
+     video {
+       z-index: 1;
+       width: 100%;
+     }
+    </style>
+    
+    <jj-warning id="warning" ltext="{{ltext}}"></jj-warning>
+    <app-location route="{{route}}"></app-location>
+
+    <img src$="[[importPath]]../images/customer.jpg">
+    <div> HOME </div>   
+    <a href="/web"><paper-button class="indigo" raised > VISITS</paper-button> </a>
+    
+<!--
+
+    <video controls poster="../images/video-poster.jpg" data-setup='{}'>
+      <source src="http://vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
+      <source src="http://vjs.zencdn.net/v/oceans.webm" type='video/webm'>
+    </video>-->
+
+    
+<!--				<paper-item class="stores around-justified">
+       <template is="dom-if" if="[[!cordova]]"> 
+        <a href="https://play.google.com/store/apps/details?id=com.aura.visitsApp" target="_blank"> 
+			  	  <paper-icon-button  style="height: 100px; width: 105px;" src$="[[importPath]]../images/playstore.png"></paper-icon-button></a>
+			  	  <span class="flex"></span>
+			  	  <paper-icon-button style="height: 80px; width: 80px;" src$="[[importPath]]../images/appstore.png"></paper-icon-button>
+			  	 </template>
+			 </paper-item>-->
+					  
+</template> 
+  <script>
+    class JjHome extends Polymer.Element { 
+        static get is() { return 'jj-home';}
+        static get properties() { return { 
+
+        
+       
+      }}
+       
+    };
+    customElements.define(JjHome.is, JjHome);
+  </script>
+
+ </dom-module> 

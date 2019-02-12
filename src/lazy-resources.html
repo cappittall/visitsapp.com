@@ -1,0 +1,67 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!-- JobiJoy-app -->
+
+	
+
+<link rel="import" href="../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> 
+
+<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-messaging.js"></script>
+
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCMWUt9yKZRIF5ILVL2hdFr88yG4pYZTO8",
+    authDomain: "visitapp-7ac36.firebaseapp.com",
+    databaseURL: "https://visitapp-7ac36.firebaseio.com",
+    projectId: "visitapp-7ac36",
+    storageBucket: "",
+    messagingSenderId: "1013602754277"
+  };
+  firebase.initializeApp(config);
+</script>
+
+<link rel="import" href="../bower_components/google-apis/google-apis.html">
+<link rel="import" href="../bower_components/google-map/google-map-marker.html">
+
+<script type="javascript" src="../bower_components/web-animations-js/web-animations.min.js"></script>
+<script src="https://apis.google.com/js/client.js"></script> 
+<link rel="import" href="../bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="../bower_components/paper-input-place/paper-input-place.html">
+
+
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/polymer/lib/utils/async.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../bower_components/app-layout/helpers/helpers.html">
+
+
+<link rel="import" href="../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
+
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="./jj-analytics.html">
+<link rel="import" href="./jj-drawer.html">
+<link rel="import" href="./jj-warning.html">
+<link rel="import" href="./jj-privacy.html">
+<link rel="import" href="./jj-signup.html">
